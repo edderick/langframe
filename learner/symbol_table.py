@@ -32,7 +32,7 @@ class SymbolTable:
 class FiniteSymbolTable(SymbolTable):
     def add(self, word, symbols):
         """add a word and symbol string/set of symbol strings to the table"""
-        if isinstance(symbols, basestring):
+        if isinstance(symbols, str):
             if symbols.isupper():
                 symbols = ConstantExpression(symbols)   # add singleton set containing string
             else:

@@ -90,14 +90,14 @@ class NPSymbolLearner:
 
         # create sets p,n which are the union of the possible, necessary (respectively) sets for each word in the
         # utterance
-        self.main_log.debug("[1]")
-        self.main_log.debug("\t\t-> %s" % pair)
+        self.log.rule_debug("", symbol="1")
+        self.log.rule_debug(pair, indent=1, symbol="->")
 
         p_universal = False
         p = set()
         n = set()
         for word in pair.words:
-            if self.possible[word].is_universal:
+            if self.possible[word].is_universal():
                 p_universal = True
 
             # if any possible set for a word is universal, then the union of p's is universal..
@@ -110,20 +110,22 @@ class NPSymbolLearner:
             # remove hypotheses that contain a symbol ruled out for all words
             # NB. if p is universal, this trivally passes
             if not p_universal and not hypothesis.symbols.issubset(p):
-                self.main_log.debug("\t\t\t[-] Sym/s Not Poss: %s for %s" % (hypothesis,
-                    hypothesis.symbols.difference(p))  )
+                debug_msg = "Sym/s Not Poss: %s for %s" % (hypothesis,
+                    hypothesis.symbols.difference(p))
+                self.log.rule_debug(debug_msg, symbol="-", indent=2)
                 return False
 
             # filter out hypotheses that are missing a necessary symbol for a word
             if not n.issubset(hypothesis.symbols):
-                self.main_log.debug("\t\t\t[-] Sym/s in N missing: %s for %s" % (hypothesis,
-                    n.difference(hypothesis.symbols))  )
+                debug_msg = "Sym/s in N missing: %s for %s" % (hypothesis,
+                   n.difference(hypothesis.symbols))
+                self.log.rule_debug(debug_msg, symbol="-", indent=2)
                 return False
 
             return True
 
         pair.hypotheses = {hyp for hyp in pair.hypotheses if test(hyp)}
-        self.main_log.debug("\n\t\t<- %s" % pair)
+        self.log.rule_debug(pair, indent=1, symbol="<-")
 
     def _rule2(self, pair):
         """
@@ -131,10 +133,9 @@ class NPSymbolLearner:
         symbols that don't appear in any utterance meanings... i.e. symbols that don't show
         up at all for an utterance are obviously not possible symbols
         """
-
-        self.main_log.debug("[2]")
-        self.main_log.debug("\t\t->")
-        self.main_log.debug(self)
+        self.log.rule_debug("", symbol="2", indent=1)
+        self.log.rule_debug("", symbol="->", indent=2)
+        self.log.rule_debug(self, indent=3)
 
         # find all the symbols in each of the remaining hypotheses...
         remaining_symbols = set()
@@ -145,8 +146,8 @@ class NPSymbolLearner:
         for word in pair.words:
             self.possible[word] = self.possible[word].intersection(remaining_symbols)
 
-        self.main_log.debug("\t\t<-")
-        self.main_log.debug("%s\n" % self)
+        self.log.rule_debug("", symbol="<-", indent=2)
+        self.log.rule_debug(self,  indent=2)
 
     def _rule3(self, pair):
         """
@@ -159,7 +160,7 @@ class NPSymbolLearner:
         # NOTE: could be optimised by breaking loop as symbol set becomes negative/
         # identity
 
-        self.main_log.debug("[3]")
+        self.log.rule_debug("", symbol="3", indent=1)
 
         # which symbols are in all remaining hypotheses?
         if len(pair.hypotheses) > 0:
@@ -172,20 +173,21 @@ class NPSymbolLearner:
         else: # empty hypothesis set
             return
 
-        self.main_log.debug("\t\tCommon: %s\n" % common_symbols)
+        self.log.rule_debug("Common: %s" % common_symbols,
+                            symbol="", indent=3)
 
         # test all word combinations (Cartesian product)
         for word in pair.words:
             symbols = copy.copy(common_symbols)
-            self.main_log.debug("\t\t%s:" % word)
+            self.log.rule_debug(word, symbol="", indent=2)
             for other_word in pair.words:
                 if word != other_word:
                     symbols.difference_update(self.possible[other_word])
-                    self.main_log.debug("\t\t\t- P(%s):  %s" % (other_word, symbols))
+                    self.log.rule_debug("P(%s):\t\t %s" % (other_word, symbols), indent=3)
             self.necessary[word].update(symbols)
 
-        self.main_log.debug("\t\t<-")
-        self.main_log.debug("%s\n" % self)
+        self.log.rule_debug("", symbol="<-", indent=2)
+        self.log.rule_debug(self,  indent=2)
 
     def _rule4(self, pair):
         """
@@ -193,7 +195,7 @@ class NPSymbolLearner:
         """
         #TODO: explain this rule properly
 
-        self.main_log.debug("[4]")
+        self.log.rule_debug("", symbol="4", indent=1)
 
         # find symbols that appear only once
         once_symbols = set()
@@ -202,37 +204,40 @@ class NPSymbolLearner:
                 if hypothesis.symbol_count[symbol] <= 1:
                     once_symbols.add(symbol)
 
-        self.main_log.debug("\t\tOnce: %s\n" % once_symbols)
+        self.log.rule_debug("once: %s" % once_symbols,
+                            indent=2)
 
         # remove the appropriate symbols
         for word in pair.words:
-            self.main_log.debug("\t\t%s:\tP:%s" % (word, self.possible[word]))
+            self.log.rule_debug("%s:\tP:%s" % (word, self.possible[word]),
+                                indent=2)
             for other_word in pair.words:
                 if other_word != word:
-                    self.main_log.debug("\t\t\t%s:" % other_word)
+                    self.log.rule_debug("%s:" % other_word, indent=3)
                     for symbol in self.necessary[other_word]:
                         symbols = once_symbols.intersection(self.necessary[other_word])
                         self.possible[word].difference_update(symbols)
-                        self.main_log.debug("\t\t\t\t%s:\tP(%s)=%s" % (symbol, word, self.possible[word]))
-            self.main_log.debug("\n")
-        self.main_log.debug("\t\t<-")
-        self.main_log.debug("%s\n" % self)
+                        self.log.rule_debug("%s:\tP(%s=%s" % (symbol, word, self.possible[word]),
+                                            indent=4)
+        self.log.rule_debug("", symbol="<-", indent=2)
+        self.log.rule_debug(self,  indent=2)
 
     def _rule5(self, pair):
-        self.main_log.debug("[5]")
+        self.log.rule_debug("", symbol="5", indent=1)
         for word in pair.words:
             # has the word converged?
             if self.converged(word):
-                self.main_log.debug("\tconvergence: %s" % word)
+                self.log.rule_debug("convergence: %s" % word, indent=1)
 
                 # empty => empty
                 if len(self.necessary[word]) is 0 and len(self.possible[word]) is 0:
-                    self.main_log.debug("\t\tempty")
+                    self.log.rule_debug("empty", indent=2)
                     self.expressions[word] = SymbolSet({BottomExpression()})
 
                 # variables => variables
                 elif self.necessary[word] == self.necessary[word].variables():
-                    self.main_log.debug("\t\tvariable: %s" % self.necessary[word])
+                    self.log.rule_debug("variable: %s" % self.necessary[word],
+                                          indent=2)
                     self.expressions[word] = self.expressions[word].intersection( self.necessary[word] )
 
                 # compare constant terms
@@ -240,13 +245,16 @@ class NPSymbolLearner:
                     valid_subexpressions = set()
                     word_constants = set(symbol for symbol in self.necessary[word] if symbol.isupper())
 
-                    self.main_log.debug("\t\tconstants: %s" % word_constants)
+                    self.log.rule_debug("constants: %s" % word_constants,
+                                                      indent=2)
 
                     for hypothesis in pair.hypotheses:
                        valid_subexpressions = valid_subexpressions.union(
                            hypothesis.subexpressions_for_constants(word_constants) )
 
-                    self.main_log.debug("\t\tcompatible expressions:")
-                    self.main_log.debug("\n".join("\t\t\t %s" % str(expr) for expr in valid_subexpressions))
+                    self.log.rule_debug("compatible exprs:", indent=2)
+                    self.log.rule_debug("\n".join("%s" % str(expr)
+                                                  for expr in valid_subexpressions),
+                                        indent=2)
 
                     self.expressions[word] = self.expressions[word].intersection(valid_subexpressions)

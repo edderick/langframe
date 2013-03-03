@@ -10,11 +10,15 @@ class NPLogger():
     def info(self, message):
         self.root_logger.info(message)
 
-    def rule_debug(self, indent_level, symbol, debug_string):
-        if symbol is not "->" or "<-":
-            symbol = "[%s]" % symbol
+    def rule_debug(self, debug_string, indent=0, symbol=""):
+        if symbol:
+            symbol = "[%s]" % str(symbol)
+        tabs = "\t" * indent
 
-        self.logger.debug("%s %s %s", ("\t" * indent_level, symbol, debug_string) )
+        debug_string = str(debug_string)
+        debug_string = debug_string.replace("\n", "\n%s" % tabs, 50)
+
+        self.debug_logger.info("%s %s %s" % (tabs, symbol, debug_string) )
 
 
 def display_log(full_channel_name):
