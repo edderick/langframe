@@ -7,8 +7,8 @@ import training.siskind_basic
 import utils.logger
 
 # logging configuration (display all from "langframe.np_learner")
-utils.logger.display_log("langframe.root.nplogger")
-utils.logger.display_log("langframe.debug.nplogger")
+utils.logger.display_log("langframe.root.NPLogger")
+utils.logger.display_log("langframe.debug.NPLogger")
 
 class TrainingPairs(unittest.TestCase):
     def testHyp1(self):

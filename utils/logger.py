@@ -2,8 +2,9 @@ import logging, sys
 
 class NPLogger():
     def __init__(self):
-        self.root_logger = logging.getLogger("langframe.root.nplogger")
-        self.debug_logger = logging.getLogger("langframe.debug.nplogger")
+        classname = self.__class__.__name__
+        self.root_logger = logging.getLogger("langframe.root.%s" % classname)
+        self.debug_logger = logging.getLogger("langframe.debug.%s" % classname)
 
         self.root_logger.info("NPSymbolLearner Initialised from %s" % "TODO")
 
