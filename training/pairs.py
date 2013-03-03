@@ -62,7 +62,7 @@ class Expression(object):
     def __init__(self, subexpressions):
 
         # Case 1: parameter is string; this is some type of RootExpression
-        if isinstance(subexpressions, basestring):
+        if isinstance(subexpressions, str):
             # upper case symbol => constant
             if subexpressions.isupper():
                 self.subexpressions = [ConstantExpression(subexpressions)]
@@ -160,7 +160,7 @@ class RootExpression(object):
 
     def __eq__(self, other):
         """Equality of root expressions simply is string comparison"""
-        if isinstance(other, basestring):
+        if isinstance(other, string):
             return self.name == other
         else:
             return self.name == other.name
