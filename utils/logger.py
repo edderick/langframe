@@ -2,11 +2,20 @@ import logging, sys
 
 class NPLogger():
     def __init__(self):
-        classname = self.__class__.__name__
-        self.root_logger = logging.getLogger("langframe.root.%s" % classname)
-        self.debug_logger = logging.getLogger("langframe.debug.%s" % classname)
+        """
+         Underlying channel name is given based on its classname (e.g. NPLogger)
+         and an individual, unique instance name, assigned at runtime. This
+         instamce channel is a subchannel of the class channel, so all messages
+         are routed through both channels.
+        """
+        class_name = self.__class__.__name__
+        instance_name = id(self)
+        full_name = "%s.%s" % (class_name, instance_name)
 
-        self.root_logger.info("NPSymbolLearner Initialised from %s" % "TODO")
+        self.root_logger = logging.getLogger("langframe.root.%s" % full_name)
+        self.debug_logger = logging.getLogger("langframe.debug.%s" % full_name)
+
+        self.root_logger.info("%s Initialised from %s" % (full_name, "TODO"))
 
     def info(self, message):
         self.root_logger.info(message)
