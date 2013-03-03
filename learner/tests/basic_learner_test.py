@@ -1,10 +1,10 @@
 import unittest, logging, sys
 
-import basic_learner
-import symbol_set
 import training.pairs
 import training.siskind_basic
 import utils.logger
+
+from learner import basic_learner, symbol_set
 
 # logging configuration (display all from "langframe.np_learner")
 utils.logger.display_log("langframe.root.NPLogger")

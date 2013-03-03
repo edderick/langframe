@@ -1,9 +1,7 @@
 import unittest
-import noisy_learner
-import basic_learner
-
 import training.pairs
-import symbol_table, symbol_set
+
+from learner import basic_learner, noisy_learner, symbol_table, symbol_set
 
 class SenseTable(unittest.TestCase):
     def setUp(self):
