@@ -36,12 +36,11 @@ class NPLogger():
         self.debug_logger.info("%s %s %s" % (tabs, symbol, debug_string) )
 
 
-def display_log(full_channel_name):
-    #TODO: use positional arguments to allow multiple channels to be specified
+def display_log(*channels):
+    for channel_name in channels:
+        log_handler = logging.StreamHandler(sys.stdout)
+        log_handler.setLevel(0)
 
-    log_handler = logging.StreamHandler(sys.stdout)
-    log_handler.setLevel(0)
-
-    log = logging.getLogger(full_channel_name)
-    log.setLevel(logging.DEBUG)
-    log.addHandler(log_handler)
+        log = logging.getLogger(channel_name)
+        log.setLevel(logging.DEBUG)
+        log.addHandler(log_handler)

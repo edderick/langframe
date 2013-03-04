@@ -9,8 +9,7 @@ import utils.logger
 from learner import basic_learner, symbol_set
 
 # logging configuration (display all from "langframe.np_learner")
-utils.logger.display_log("langframe.root.NPLogger")
-utils.logger.display_log("langframe.debug.NPLogger")
+utils.logger.display_log("langframe.root.NPLogger", "langframe.debug.NPLogger")
 
 class TrainingPairs(unittest.TestCase):
     def testHyp1(self):
