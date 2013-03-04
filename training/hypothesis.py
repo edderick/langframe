@@ -8,7 +8,7 @@ class Hypothesis:
     Originally, expression is a list of strings: recursively convert to our more
     appropriate format of a nested tuple of variables/constants; store other useful data
     """
-    def __init__(self, expression, count=0):
+    def __init__(self, expression):
         self.bound_expression = Expression(expression)
         self.subexprs = self.bound_expression.deep_subexpressions()
         (self.constants, self.variables) = self.bound_expression.counts()

@@ -1,6 +1,5 @@
 import unittest
 
-from training import pairs
 from training.expression import Expression, VariableExpression, ConstantExpression
 
 
@@ -86,14 +85,14 @@ class FullExpression(unittest.TestCase):
                         ["PARTOF",
                             ["CAUSE", "arm"], "john"],
                             ["TO", "ball"]]]]  )
-        (consts, vars) = expr.counts()
+        (consts, variables) = expr.counts()
 
         self.assertEqual(consts["CAUSE"], 3)
         self.assertEqual(consts["PARTOF"], 1)
         self.assertEqual(consts["TO"], 1)
-        self.assertEqual(vars["john"], 2)
-        self.assertEqual(vars["arm"], 1)
-        self.assertEqual(vars["ball"], 1)
+        self.assertEqual(variables["john"], 2)
+        self.assertEqual(variables["arm"], 1)
+        self.assertEqual(variables["ball"], 1)
 
     def test_subexpressions(self):
         expr = Expression(

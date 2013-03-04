@@ -104,7 +104,7 @@ class RootExpression(object):
 
     def __eq__(self, other):
         """Equality of root expressions simply is string comparison"""
-        if isinstance(other, string):
+        if isinstance(other, str):
             return self.name == other
         else:
             return self.name == other.name

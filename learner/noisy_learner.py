@@ -62,7 +62,7 @@ class SenseSymbolTable:
             sense_name = "%s_%d" % (word, count + 1)
             self.table[word].add(sense_name)
             return sense_name
-        except:
+        except KeyError:
             # if singleton entry was emulated (i.e. wasn't an actual instantiated set: was a dummy sense)
             self.table[word] = set()
 
@@ -88,8 +88,8 @@ class SenseSymbolTable:
             # multiple entries: remove the latest sense entry
             else:
                 self.table[word].remove(sense)
-        # single sense being emulated: do nothing
-        except:
+        except KeyError:
+            # single sense being emulated: do nothing
             pass
 
 class NoisySymbolLearner:

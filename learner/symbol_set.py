@@ -32,6 +32,7 @@ class UniversalSymbolSet:
     def is_universal(self):
         return True
 
+    # noinspection PyUnusedLocal
     def __contains__(self, element):
         # universal set trivially contains all elements
         return True

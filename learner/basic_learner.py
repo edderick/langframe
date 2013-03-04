@@ -13,8 +13,7 @@ and can train on utterance-meaning pairs).
 import copy
 from learner.logger.np_logger import NPLogger
 from training.expression import BottomExpression
-import utils.logger
-from symbol_set import SymbolSet, UniversalSymbolSet
+from symbol_set import SymbolSet
 from symbol_table import FiniteSymbolTable, UniversalSymbolTable
 
 
