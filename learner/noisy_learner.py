@@ -56,6 +56,7 @@ class SenseSymbolTable:
 
     def __contains__(self, word):
         """Does a word have a mapping? WARNING: will return False if it has single sense"""
+
         return word in self.table.keys()
 
     def add_sense(self, word):
@@ -84,7 +85,9 @@ class SenseSymbolTable:
 
     def remove_sense(self, sense):
         try:
-            word = sense[:-2] #TODO: this will break with >9 senses for a word!
+            underscore_pos = sense.find("_")
+            word = sense[:underscore_pos]
+
             count = len(self.table[word])
 
             # remove entire sense entry from dictionary: the single sense definition can be emulated

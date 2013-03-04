@@ -35,8 +35,21 @@ class SenseTable(unittest.TestCase):
         self.assertEqual(self.sense_table["example"], {"example_0"})
 
     def test_remove_dummy_sense(self):
-        self.sense_table.remove_sense("example")
+        self.sense_table.remove_sense("example_0")
         self.assertEqual(self.sense_table["example"], {"example_0"})
+
+    def test_double_digits(self):
+        for i in range(20):
+            self.sense_table.add_sense("example")
+
+        sense_table = self.sense_table["example"]
+        senses = {"example_%d" % i for i in range(0,21)}
+        self.assertEqual(senses, self.sense_table["example"])
+
+        for i in range(1, 21):
+            self.sense_table.remove_sense("example_%d" % i)
+
+        self.assertEqual({"example_0"}, self.sense_table["example"])
 
 class BackupTests(unittest.TestCase):
     def setUp(self):
@@ -136,18 +149,27 @@ class ColourTest(unittest.TestCase):
 
     def test1(self):
         exprSetup = training.pairs.UtteranceMeaningPair("ball", {Hypothesis(["ball"])})
+
         expr1 = training.pairs.UtteranceMeaningPair("ball red", {Hypothesis(["ball", "r_255", "b_0", "g_0"])})
         expr2 = training.pairs.UtteranceMeaningPair("ball blue", {Hypothesis(["ball", "r_0", "b_255", "g_0"])})
         expr3 = training.pairs.UtteranceMeaningPair("ball green", {Hypothesis(["ball", "r_0", "b_0", "g_255"])})
         expr3a = training.pairs.UtteranceMeaningPair("ball green", {Hypothesis(["ball", "r_10", "b_10", "g_150"])})
 
+        # get convergence on meaning of "ball"
         self.noisy_learner.process(exprSetup)
+        self.assertTrue(self.noisy_learner.np_learner.converged("ball_0"))
+        self.assertEqual(
+            len(self.noisy_learner.np_learner.expressions["ball_0"]), 1)
+
         self.noisy_learner.process(expr1)
+        self.assertEqual({"r_255", "b_0", "g_0"},
+                         self.noisy_learner.np_learner.expressions["red_0"])
+
         self.noisy_learner.process(expr2)
         self.noisy_learner.process(expr3)
         self.noisy_learner.process(expr3a)
-
-        print "hello"
+        self.assertEqual({"r_10", "b_10", "g_150"},
+                         self.noisy_learner.np_learner.expressions["green_1"])
 
 if __name__ == "__main__":
     unittest.main()
