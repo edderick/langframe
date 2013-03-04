@@ -23,7 +23,6 @@ class Expression(object):
 
 
     def __getitem__(self, index):
-        #TODO: is this necessary apart from tests?
         return self.subexpressions[index]
 
     def __eq__(self, other):
@@ -74,7 +73,7 @@ class Expression(object):
                 except KeyError:
                     self.var_counts[variable] = subexpr_var_count[variable]
 
-        return (self.const_counts, self.var_counts)
+        return self.const_counts, self.var_counts
 
     def deep_subexpressions(self):
         subexpression_set = set()
@@ -118,7 +117,7 @@ class RootExpression(object):
 class VariableExpression(RootExpression):
     def counts(self):
         """no constants & one instance of itself (variable)"""
-        return (dict(), {self.name : 1})
+        return dict(), {self.name : 1}
 
     def replace(self, substitutions):
         if self.name in substitutions.keys():
@@ -133,7 +132,7 @@ class VariableExpression(RootExpression):
 class ConstantExpression(RootExpression):
     def counts(self):
         """one instance of itself (constant) & no variables"""
-        return({self.name : 1}, dict())
+        return {self.name : 1}, dict()
 
     def replace(self, substitutions):
         return self

@@ -1,8 +1,5 @@
 from utils.logger import Logger
 
-__author__ = 'sam'
-
-
 class NPLogger(Logger):
     def __init__(self):
         """
