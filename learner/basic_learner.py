@@ -193,9 +193,14 @@ class NPSymbolLearner:
 
     def _rule4(self, pair):
         """
-        Remove from the possible any symbols that only appear once.
+        For symbols that appear only once in all remaining hypotheses, if it's
+        in the necessary set for some word, it can be removed from the possible
+        set for all other words in the utterance.
+
+        This is because each conceptual symbol can only be "contributed to"
+        by one word symbol in an utterance. If we know it's being contributed
+        to by some word, we can exclude it being contributed to by any other.
         """
-        #TODO: explain this rule properly
 
         self.log.rule_debug("", symbol="4", indent=1)
 
