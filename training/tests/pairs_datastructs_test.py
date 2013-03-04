@@ -1,5 +1,6 @@
 import unittest
-import pairs
+
+from training import pairs
 
 class RootExpression(unittest.TestCase):
     def test_equal_expression(self):

@@ -1,7 +1,7 @@
-import unittest, logging, sys
+import unittest
 
 import training.pairs
-import training.siskind_basic
+import training.sample.siskind_basic
 import utils.logger
 
 from learner import basic_learner, symbol_set
@@ -129,20 +129,20 @@ class NPTables(unittest.TestCase):
         p.add("ball", {"ball", "arm"})
 
         self.learner = basic_learner.NPSymbolLearner(necessary=n, possible=p)
-        self.pair = training.siskind_basic.pair1()
+        self.pair = training.sample.siskind_basic.pair1()
 
     def test_rule1(self):
         self.IndividualSetUp()
 
-        self.assertIn(training.siskind_basic.hyp1, self.pair.hypotheses)
-        self.assertIn(training.siskind_basic.hyp2, self.pair.hypotheses)
-        self.assertIn(training.siskind_basic.hyp3, self.pair.hypotheses)
+        self.assertIn(training.sample.siskind_basic.hyp1, self.pair.hypotheses)
+        self.assertIn(training.sample.siskind_basic.hyp2, self.pair.hypotheses)
+        self.assertIn(training.sample.siskind_basic.hyp3, self.pair.hypotheses)
 
         self.learner._rule1(self.pair)  # rule 1
 
-        self.assertIn(training.siskind_basic.hyp1, self.pair.hypotheses)
-        self.assertNotIn(training.siskind_basic.hyp2, self.pair.hypotheses)
-        self.assertNotIn(training.siskind_basic.hyp3, self.pair.hypotheses)
+        self.assertIn(training.sample.siskind_basic.hyp1, self.pair.hypotheses)
+        self.assertNotIn(training.sample.siskind_basic.hyp2, self.pair.hypotheses)
+        self.assertNotIn(training.sample.siskind_basic.hyp3, self.pair.hypotheses)
 
     def test_rule2(self):
         self.IndividualSetUp()
@@ -201,7 +201,7 @@ class ConvergenceMeasure(unittest.TestCase):
 
         self.learner = basic_learner.NPSymbolLearner(necessary=n, possible=p)
 
-        self.pair = training.siskind_basic.pair1()
+        self.pair = training.sample.siskind_basic.pair1()
 
     def testNoConvergence(self):
         unconverged = set() 
