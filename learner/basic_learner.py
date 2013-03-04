@@ -11,6 +11,7 @@ and can train on utterance-meaning pairs).
 """
 
 import copy
+from learner.logger.np_logger import NPLogger
 from training.expression import BottomExpression
 import utils.logger
 from symbol_set import SymbolSet, UniversalSymbolSet
@@ -23,7 +24,7 @@ class NPSymbolLearner:
         self.possible = possible
         self.expressions = UniversalSymbolTable()
 
-        self.log = utils.logger.NPLogger()
+        self.log = NPLogger()
 
         class Foo:
             def debug(self, bar):
