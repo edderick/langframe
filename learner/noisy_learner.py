@@ -25,17 +25,20 @@ class ConfidenceTable:
             return 0
 
     def __setitem__(self, key, value):
+        """Override usage of [] for setting an entry: standard"""
         self.table[key] = value
 
     def __repr__(self):
-        return "\n".join("%s | %d" % (word.rjust(10), self.table[word]) for word in self.table.keys()  )
+        """String representation of a ConfidenceTable"""
+        return "\n".join("%s | %d" %
+                         (word.rjust(10), self.table[word]) for word in self.table.keys()  )
 
     def poke(self, sense):
         """increment the confidence of the sense by one"""
         self.table[sense] = self[sense] + 1
 
 class SenseSymbolTable:
-    """Maps a word to a set of sense symbols"""
+    """Maps a word to a set of sense symbols for this word"""
     def __init__(self):
         self.table = dict()
 
@@ -45,14 +48,15 @@ class SenseSymbolTable:
         which returns a default value of {word}_0
         """
         try:
-            # if there are sense entries, return them...
+            # if there are sense entries, return them... (plus dummy "_0" entry)
             return self.table[key].union({"%s_0" % key})
         except KeyError:
             # otherwise, return singleton default sense set (word_0)
             return {"%s_0" % key}
 
-    def __contains__(self, sense):
-        return sense in self.table.keys()
+    def __contains__(self, word):
+        """Does a word have a mapping? WARNING: will return False if it has single sense"""
+        return word in self.table.keys()
 
     def add_sense(self, word):
         """ Add a new sense for a word (i.e. automatically increment subscript)"""
@@ -62,6 +66,7 @@ class SenseSymbolTable:
             sense_name = "%s_%d" % (word, count + 1)
             self.table[word].add(sense_name)
             return sense_name
+
         except KeyError:
             # if singleton entry was emulated (i.e. wasn't an actual instantiated set: was a dummy sense)
             self.table[word] = set()
@@ -71,6 +76,7 @@ class SenseSymbolTable:
             return sense_name
 
     def manual_add(self, word, sense):
+        """Usage not recommended! Should really only be used for tests"""
         if word in self.table.keys():
             self.table[word].add(sense)
         else:
@@ -78,7 +84,7 @@ class SenseSymbolTable:
 
     def remove_sense(self, sense):
         try:
-            word = sense[:-2]
+            word = sense[:-2] #TODO: this will break with >9 senses for a word!
             count = len(self.table[word])
 
             # remove entire sense entry from dictionary: the single sense definition can be emulated
@@ -93,20 +99,26 @@ class SenseSymbolTable:
             pass
 
 class NoisySymbolLearner:
+    """
+    Learn from noisy/homonymous data by maintaining a basic_learner/NPLearner with sense symbols instead of word
+    symbols -- processes all combinations of sense assignment in NPLearner to determine which would be consistent,
+    and if none would be, determine minimal subset of extra sense assignments necessary to make it consistent.
+    """
     def __init__(self, np_learner=basic_learner.NPSymbolLearner()):
         self.np_learner = np_learner
         self.sense_table = SenseSymbolTable()
         self.confidence = ConfidenceTable()
 
     def __repr__(self):
+        """string representation (of internal NPLearner)"""
         return str(self.np_learner)
 
     def __contains__(self, sense):
-        """is a sense contained in this learner?"""
+        """is a sense (not word!) contained in this learner?"""
         return sense in self.np_learner
 
     def _backup(self):
-        """keep a copy of the current NP tables, in case any are made inconsistent"""
+        """return a copy of the current NP tables, to be restored if any entries become inconsistent"""
         return (copy.deepcopy(self.np_learner.necessary),
             copy.deepcopy(self.np_learner.possible))
 
@@ -124,15 +136,18 @@ class NoisySymbolLearner:
         self.np_learner.possible[sense] = self.np_learner.possible[sense].intersection(p_set)
         self.confidence[sense] = confidence_level
 
+        # calculate variable expressions
         if len(n_set) > 0:
             p_var = p_set.pop()
             n_var = n_set.pop()
             if n_var.islower() and p_var.islower() and n_var is p_var:
                 self.np_learner.expressions[sense] = SymbolSet(VariableExpression(n_var))
 
+        # calculate "empty" expressions
         if len(n_set) is 0 and len(p_set) is 0:
             self.np_learner.expressions[sense] = SymbolSet(BottomExpression())
 
+        # sort out sense table
         word = sense[:-2]
         sense_count = int(sense[-1:])
         if sense_count > 0:
@@ -146,31 +161,29 @@ class NoisySymbolLearner:
         # backup the current state of the lexical tables
         # TODO: optimisation; only backup relevant senses
 
-        # cartesian product; i.e. all combinations of sense symbols: which are consistent?
         consistent_senses = list()
+
+        # cartesian product; i.e. all combinations of sense symbols: which are consistent?
         senses_tuple = tuple( [tuple(senses[k]) for k in senses.keys() ] )
+
         for sense_assignment in itertools.product(*senses_tuple):
             (n, p) = self._backup()
 
-            # create new "pair" using sense symbols instead of words
+            # create new utterance-meaning pair using sense symbols instead of words
             new_utterance = " ".join(sense_assignment)
-            #print new_utterance
             hyp_copy = copy.deepcopy(hypotheses)
             sense_pair = training.pairs.UtteranceMeaningPair(new_utterance, hyp_copy)
 
             # apply NP learner rules 1-4
             self.np_learner.process(sense_pair)
 
-            # check lexical consistency
+            # check lexical consistency; add to list if it's consistent
             if self.np_learner.all_consistent():
                 consistent_senses.append(sense_pair)
-
-            #print self
 
             # restore the lexical table
             self._restore(n,p)
         return consistent_senses
-
 
     def process(self, pair):
         """process an utterance/meaning pair"""
@@ -204,32 +217,45 @@ class NoisySymbolLearner:
                     chosen_sense_assignment = sense_assignment
         else:
             print "no senses consistent"
-
             # calculate the possible subset of words to add a new sense for; starting with the smallest
+
+            # create a list of iterators in order of size of combinations
+            # iterator for 1-combinations, ... , iterator for n-combinations
             fixed_size_subset_iterators = [itertools.combinations(pair.words, num_elems)
                                            for num_elems in range(1, len(pair.words) + 1)]
 
+            # chain these iterators in ascending order; as we want minimal subset (plus smaller
+            # combinations are faster)
             for subset in itertools.chain.from_iterable(fixed_size_subset_iterators):
                 print "new subset: %s" % str(subset)
+
                 sense_names = copy.deepcopy(senses)
                 new_sense_names = []
                 for word in subset:
-                    new_sense = self.sense_table.add_sense(word)
+                    new_sense = self.sense_table.add_sense(word) # add sense to sense table
                     sense_names[word].add(new_sense)
-                    new_sense_names.append(new_sense)
+                    new_sense_names.append(new_sense) # keep track of new senses, in case we want to delete
 
                 consistent_senses = self._consider_sense_assignments(sense_names, pair.hypotheses)
 
+                # finish if this sense assignment is consistent
                 if len(consistent_senses) > 0:
                     chosen_sense_assignment = consistent_senses.pop()
                     break
 
+                # o/w remove these new senses from the sense table
                 for sense in new_sense_names:
                     self.sense_table.remove_sense(sense)
 
         print "finished"
+
+        # this shouldn't happen: worst case is every symbol having new sense
         if not chosen_sense_assignment:
             print "ERROR: no consistent sense assignment"
+
+        # each of these senses has a usage: increase confidence that this sense isn't spurious
         for sense in chosen_sense_assignment.words:
             self.confidence.poke(sense)
+
+        # permanently process with new chosen sense assignment
         self.np_learner.process(chosen_sense_assignment)

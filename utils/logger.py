@@ -9,7 +9,7 @@ class Logger():
     its own though.
     """
     def __init__(self, subchannel):
-        # lookup which function in which file created this logger
+        # find which function in which file created this logger
         caller_funcname = inspect.stack()[2][3]
         caller_filename = inspect.stack()[2][1]
 
@@ -20,10 +20,13 @@ class Logger():
                               (subchannel, caller_funcname, caller_filename))
 
     def info(self, message):
+        """Method to log low-priority message (for any logger)"""
         self.root_logger.info(message)
 
 
 def display_log(*channels):
+    """Starts outputting the channel names passed as positional args to stdout"""
+
     for channel_name in channels:
         log_handler = logging.StreamHandler(sys.stdout)
         log_handler.setLevel(0)

@@ -25,25 +25,19 @@ class NPSymbolLearner:
 
         self.log = NPLogger()
 
-        class Foo:
-            def debug(self, bar):
-                pass
-        self.main_log = Foo()
-
     def __str__(self):
-        """String representation of symbol learner state (show both N and P tables side by side)"""
+        """String representation of symbol learner state (show N and P tables by word index)"""
         return "\n".join("%s || %s | %s" % (word.rjust(10),
                 str(self.necessary[word]).ljust(25),
                 str(self.possible[word]).ljust(25))
                           for word in self.necessary )
 
     def __contains__(self, word):
-        """is there an entry in this learner for some word?"""
+        """Is there an entry in this learner for some word?"""
         return word in self.necessary
 
-
-    def process(self,pair):
-        """Perform one iteration, based on an utterance -> meaning pair"""
+    def process(self, pair):
+        """Perform one learning iteration, from an utterance -> meaning pair"""
         self.log.info("[~~>] %s" % pair)
         self._rule1(pair)
         self._rule2(pair)
@@ -52,7 +46,7 @@ class NPSymbolLearner:
         self._rule5(pair)
 
     def converged(self, word):
-        """Have the symbol sets have converged on the same values for an entry?"""
+        """Have the symbol sets converged on the same symbol sets for an entry?"""
         return self.necessary[word] == self.possible[word]
 
     def all_consistent(self):
@@ -64,36 +58,34 @@ class NPSymbolLearner:
 
     def consistent(self, word):
         """
-        Inconsistency implies a lexical entry has been 
-        corrupted by noise (no correct meanings hypothesised) or homonymy (multiple
-        disparate meanings for the same word)
+        Inconsistency implies a lexical entry has been corrupted by noise (no correct meanings in
+        UTM pair) or homonymy (multiple disparate meanings for the same word)
         """
+
         # universal possible set trivially consistent (non-empty and n is subset)
-        #print "consistent? : %s" % word
         if self.possible[word].is_universal():
             return True
 
         # if conceptual expressions for sense empty => corrupted
+        # words with semantically null meaning (e.g. "the") have BottomExpression
         if (not self.expressions[word].is_universal()) and len(self.expressions[word]) is 0:
             return False
 
-        # consistency: necessary subset of possible
+        # consistency: necessary is subset of possible
         for symbol in self.necessary[word]:
             if symbol not in self.possible[word]:
                 return False
         return True
             
-    
+
     def _rule1(self, pair):
         """
         For an utterance/meaning pair, filter out the hypotheses that violate Rule 1 in Siskind 1996.
         """
-
-        # create sets p,n which are the union of the possible, necessary (respectively) sets for each word in the
-        # utterance
         self.log.rule_debug("", symbol="1")
         self.log.rule_debug(pair, indent=1, symbol="->")
 
+        # create sets p,n as the union of the possible, necessary  sets for each word in the utterance
         p_universal = False
         p = set()
         n = set()
@@ -103,7 +95,6 @@ class NPSymbolLearner:
 
             # if any possible set for a word is universal, then the union of p's is universal..
             if not p_universal:
-                #print self.possible[word]
                 p = p.union(self.possible[word])
             n = n.union(self.necessary[word])
 
@@ -114,6 +105,7 @@ class NPSymbolLearner:
                 debug_msg = "Sym/s Not Poss: %s for %s" % (hypothesis,
                     hypothesis.symbols.difference(p))
                 self.log.rule_debug(debug_msg, symbol="-", indent=2)
+
                 return False
 
             # filter out hypotheses that are missing a necessary symbol for a word
@@ -121,6 +113,7 @@ class NPSymbolLearner:
                 debug_msg = "Sym/s in N missing: %s for %s" % (hypothesis,
                    n.difference(hypothesis.symbols))
                 self.log.rule_debug(debug_msg, symbol="-", indent=2)
+
                 return False
 
             return True
@@ -171,6 +164,7 @@ class NPSymbolLearner:
 
             for expression in pair.hypotheses:
                 common_symbols.intersection_update(expression.symbols)
+
         else: # empty hypothesis set
             return
 
@@ -181,6 +175,7 @@ class NPSymbolLearner:
         for word in pair.words:
             symbols = copy.copy(common_symbols)
             self.log.rule_debug(word, symbol="", indent=2)
+
             for other_word in pair.words:
                 if word != other_word:
                     symbols.difference_update(self.possible[other_word])
@@ -229,13 +224,17 @@ class NPSymbolLearner:
         self.log.rule_debug(self,  indent=2)
 
     def _rule5(self, pair):
+        """
+        Generate conceptual expressions if a word in the utterance has converged
+        """
         self.log.rule_debug("", symbol="5", indent=1)
         for word in pair.words:
             # has the word converged?
             if self.converged(word):
                 self.log.rule_debug("convergence: %s" % word, indent=1)
 
-                # empty => empty
+                # empty => BottomExpression
+                #   both N and P empty => semantically null but non-corrupt entry
                 if len(self.necessary[word]) is 0 and len(self.possible[word]) is 0:
                     self.log.rule_debug("empty", indent=2)
                     self.expressions[word] = SymbolSet({BottomExpression()})

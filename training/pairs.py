@@ -6,7 +6,7 @@ class UtteranceMeaningPair:
 
     def __init__(self, utterance, hypotheses=set()):
         self.utterance = utterance
-        self.words = set(utterance.split(" "))
+        self.words = set(utterance.split(" ")) # words need no order
         self.hypotheses = hypotheses
 
     def __repr__(self):

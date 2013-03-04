@@ -5,7 +5,7 @@ class NPLogger(Logger):
         """
          Underlying channel name is given based on its classname (e.g. NPLogger)
          and an individual, unique instance name, assigned at runtime. This
-         instamce channel is a subchannel of the class channel, so all messages
+         instance channel is a subchannel of the class channel, so all messages
          are routed through both channels.
         """
         class_name = self.__class__.__name__
@@ -15,6 +15,10 @@ class NPLogger(Logger):
         Logger.__init__(self, full_name)
 
     def rule_debug(self, debug_string, indent=0, symbol=""):
+        """
+        Format rule flow in a standardised way (symbol display, level of
+        indentation).
+        """
         if symbol:
             symbol = "[%s]" % str(symbol)
         tabs = "\t" * indent

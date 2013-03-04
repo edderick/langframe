@@ -42,6 +42,7 @@ class Expression(object):
         return any(other in subexpression for subexpression in self.subexpressions)
 
     def __repr__(self):
+        """String representation"""
         return "<%s>" % ",".join(repr(elem) for elem in self.subexpressions)
 
     def replace(self, substitutions):
@@ -60,11 +61,12 @@ class Expression(object):
         self.var_counts = dict()
 
         for element in self.subexpressions:
+            # get constant/variable counts from some subexpression
             (subexpr_const_count, subexpr_var_count) = element.counts()
             for constant in subexpr_const_count.keys():
-                try:
+                try: # if we have count for this const already...
                     self.const_counts[constant] += subexpr_const_count[constant]
-                except KeyError:
+                except KeyError: # o/w add entry with subexpression's value
                     self.const_counts[constant] = subexpr_const_count[constant]
 
             for variable in subexpr_var_count.keys():
@@ -76,8 +78,13 @@ class Expression(object):
         return self.const_counts, self.var_counts
 
     def deep_subexpressions(self):
+        """Determine all possible subexpressions of this Expression"""
         subexpression_set = set()
+
+        # this expression is a subexpression of itself (trivially)
         subexpression_set = subexpression_set.union( {self} )
+
+        # recurse; this will terminate for RootExpressions
         for subexpression in self.subexpressions:
             recursive_subexprs = subexpression.deep_subexpressions()
             subexpression_set = subexpression_set.union( recursive_subexprs )
@@ -86,6 +93,10 @@ class Expression(object):
 
 
 class RootExpression(object):
+    """
+    Some kind of Expression at the 'leaf' of the expression in tree form. Must be some
+    subclass of RootExpression
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, name):
@@ -135,6 +146,7 @@ class ConstantExpression(RootExpression):
         return {self.name : 1}, dict()
 
     def replace(self, substitutions):
+        """constant cannot be replaced"""
         return self
 
     def __repr__(self):

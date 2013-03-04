@@ -46,6 +46,7 @@ class FiniteSymbolTable(SymbolTable):
             self.mapping[word] = self.mapping[word].union(symbols)
 
     def __str__(self):
+        """String representation"""
         return "\n".join(["%s || %s" % (word.rjust(10),
                                     str(self[word]).ljust(25))
                                         for word in self.mapping]  )
@@ -63,6 +64,7 @@ class FiniteSymbolTable(SymbolTable):
 
 
 class UniversalSymbolTable(SymbolTable):
+    """Symbol table with UniversalSymbolSet as a default for a new entry"""
     def add(self, word, symbols):
         # if given symbol is single string, add to singleton set otherwise
         # it would add each individual letter as a symbol

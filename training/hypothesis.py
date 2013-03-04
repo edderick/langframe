@@ -14,8 +14,8 @@ class Hypothesis:
         (self.constants, self.variables) = self.bound_expression.counts()
 
         self.symbols = set(self.constants.keys() + self.variables.keys())
-        self.symbol_count = dict()
 
+        self.symbol_count = dict()
         for var in self.variables.keys():
             self.symbol_count[var] = self.variables[var]
         for const in self.constants.keys():
@@ -28,6 +28,10 @@ class Hypothesis:
         return symbol in self.bound_expression
 
     def subexpressions_for_constants(self, word_constants):
+        """
+        Return the subexpressions of this hypothesis' meaning which only
+        contain some constants.
+        """
         valid_subexpressions = set()
         for subexpression in self.subexprs:
             (subexpr_const_count, subexpr_var_count) = subexpression.counts()
@@ -35,7 +39,6 @@ class Hypothesis:
             subexpr_constants = set(subexpr_constants)
 
             if word_constants.issubset(subexpr_constants):
-#                print "\t\t\t~>valid\n"
                 valid_subexpressions.add(subexpression)
 
         return valid_subexpressions
