@@ -1,6 +1,7 @@
 from learner.symbol_set import SymbolSet, UniversalSymbolSet
 from abc import ABCMeta, abstractmethod
-from training.pairs import VariableExpression, ConstantExpression
+from training.expression import VariableExpression, ConstantExpression
+
 
 class SymbolTable:
     __metaclass__ = ABCMeta

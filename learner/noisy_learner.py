@@ -8,6 +8,7 @@ would have otherwise caused lexical corruption if these were processed.
 import copy
 import itertools
 import basic_learner
+from training.expression import VariableExpression, BottomExpression
 import training.pairs
 from symbol_set import SymbolSet
 
@@ -127,10 +128,10 @@ class NoisySymbolLearner:
             p_var = p_set.pop()
             n_var = n_set.pop()
             if n_var.islower() and p_var.islower() and n_var is p_var:
-                self.np_learner.expressions[sense] = SymbolSet(training.pairs.VariableExpression(n_var))
+                self.np_learner.expressions[sense] = SymbolSet(VariableExpression(n_var))
 
         if len(n_set) is 0 and len(p_set) is 0:
-            self.np_learner.expressions[sense] = SymbolSet(training.pairs.BottomExpression())
+            self.np_learner.expressions[sense] = SymbolSet(BottomExpression())
 
         word = sense[:-2]
         sense_count = int(sense[-1:])

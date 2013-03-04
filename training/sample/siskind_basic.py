@@ -1,4 +1,5 @@
-from training.pairs import Hypothesis, UtteranceMeaningPair
+from training.hypothesis import Hypothesis
+from training.pairs import UtteranceMeaningPair
 
 # UTM pair 1 from Siskind's paper
 hyp1 = Hypothesis(["CAUSE", ["john", ["GO", ["ball" , ["TO", "john"]]]]])

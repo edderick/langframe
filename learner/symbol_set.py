@@ -1,4 +1,5 @@
-from training.pairs import VariableExpression, ConstantExpression
+from training.expression import VariableExpression, ConstantExpression
+
 
 class SymbolSet(set):
     """

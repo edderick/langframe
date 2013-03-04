@@ -1,4 +1,6 @@
 import unittest
+from training.expression import Expression
+from training.hypothesis import Hypothesis
 import training.pairs
 
 from learner import basic_learner, noisy_learner, symbol_table, symbol_set
@@ -107,7 +109,7 @@ class SenseAssignment(unittest.TestCase):
         self.noisy_learner.manual_entry("with_0", {"WITH"}, {"WITH"}, 1000)
 
         # cheeky hack; manually enter conceptual expression for "arrive"
-        expr = training.pairs.Expression(["GO", "mary", ["TO", ["BE", "mary", ["AT", "party"]]]])
+        expr = Expression(["GO", "mary", ["TO", ["BE", "mary", ["AT", "party"]]]])
         self.noisy_learner.np_learner.expressions["arrive_0"] = self.noisy_learner.np_learner.expressions["arrive_0"].intersection({expr})
 
         #print self.noisy_learner
@@ -118,7 +120,7 @@ class SenseAssignment(unittest.TestCase):
         self.assertTrue(False)
         pass
         utm_pair = training.pairs.UtteranceMeaningPair("john saw mary arrive at the ball",
-            {training.pairs.Hypothesis(["SEE", "john", ["GO", "mary", ["TO", ["BE", "mary", ["AT", "party"]]]]])})
+            {Hypothesis(["SEE", "john", ["GO", "mary", ["TO", ["BE", "mary", ["AT", "party"]]]]])})
 
         self.noisy_learner.process(utm_pair)
 
@@ -133,11 +135,11 @@ class ColourTest(unittest.TestCase):
         self.noisy_learner = noisy_learner.NoisySymbolLearner()
 
     def test1(self):
-        exprSetup = training.pairs.UtteranceMeaningPair("ball", {training.pairs.Hypothesis(["ball"])})
-        expr1 = training.pairs.UtteranceMeaningPair("ball red", {training.pairs.Hypothesis(["ball", "r_255", "b_0", "g_0"])})
-        expr2 = training.pairs.UtteranceMeaningPair("ball blue", {training.pairs.Hypothesis(["ball", "r_0", "b_255", "g_0"])})
-        expr3 = training.pairs.UtteranceMeaningPair("ball green", {training.pairs.Hypothesis(["ball", "r_0", "b_0", "g_255"])})
-        expr3a = training.pairs.UtteranceMeaningPair("ball green", {training.pairs.Hypothesis(["ball", "r_10", "b_10", "g_150"])})
+        exprSetup = training.pairs.UtteranceMeaningPair("ball", {Hypothesis(["ball"])})
+        expr1 = training.pairs.UtteranceMeaningPair("ball red", {Hypothesis(["ball", "r_255", "b_0", "g_0"])})
+        expr2 = training.pairs.UtteranceMeaningPair("ball blue", {Hypothesis(["ball", "r_0", "b_255", "g_0"])})
+        expr3 = training.pairs.UtteranceMeaningPair("ball green", {Hypothesis(["ball", "r_0", "b_0", "g_255"])})
+        expr3a = training.pairs.UtteranceMeaningPair("ball green", {Hypothesis(["ball", "r_10", "b_10", "g_150"])})
 
         self.noisy_learner.process(exprSetup)
         self.noisy_learner.process(expr1)

@@ -1,4 +1,6 @@
 import unittest
+from training.expression import Expression
+from training.hypothesis import Hypothesis
 
 import training.pairs
 import training.sample.siskind_basic
@@ -13,25 +15,25 @@ utils.logger.display_log("langframe.debug.NPLogger")
 class TrainingPairs(unittest.TestCase):
     def testHyp1(self):
         expr = ["CAUSE", "john", ["GO", "ball" , ["TO", "john"]]]
-        hyp = training.pairs.Hypothesis(expr)
+        hyp = Hypothesis(expr)
         self.assertEqual(hyp.symbols, {"CAUSE", "john", "GO", "ball", "TO"})
 
     def testHyp2(self):
         expr = ["WANT", "john", "ball"]
-        hyp = training.pairs.Hypothesis(expr) 
+        hyp = Hypothesis(expr)
         self.assertEqual(hyp.symbols, {'WANT', "john", "ball"})
 
     def testHyp3(self):
         expr = ["CAUSE", "john", ["GO", ["PARTOF", ["LEFT", "arm"], "john"], 
                     ["TO", "ball"]]]
-        hyp = training.pairs.Hypothesis(expr)
+        hyp = Hypothesis(expr)
         self.assertEqual(hyp.symbols, {"CAUSE", "john", "GO", "PARTOF", "LEFT",
                                         "arm", "TO", "ball"} )
 
     def testContainsSymbol(self):
         expr = ["CAUSE", "john", ["GO", ["PARTOF", ["LEFT", "arm"], "john"],
                                   ["TO", "ball"]]]
-        hyp = training.pairs.Hypothesis(expr)
+        hyp = Hypothesis(expr)
 
         # check all symbols reported as being in
         self.assertIn("CAUSE", hyp)
@@ -227,7 +229,7 @@ class ConceptualExpressionTable(unittest.TestCase):
         self.np_learner = basic_learner.NPSymbolLearner()
 
     def testUniversal(self):
-        expression = training.pairs.Expression(["CAUSE", ["GO", "to"]])
+        expression = Expression(["CAUSE", ["GO", "to"]])
         self.assertIn(expression, self.np_learner.expressions["word"] )
 
 class ConceptualExpressionRules(unittest.TestCase):
@@ -245,7 +247,7 @@ class ConceptualExpressionRules(unittest.TestCase):
         p.add("ball", "ball")
 
         self.learner = basic_learner.NPSymbolLearner(necessary=n, possible=p)
-        self.hypothesis = training.pairs.Hypothesis(["CAUSE", ["john", ["GO", ["ball" , ["TO", "john"]]]]])
+        self.hypothesis = Hypothesis(["CAUSE", ["john", ["GO", ["ball" , ["TO", "john"]]]]])
 
     def testEmptyTerms(self):
         utm_pair = training.pairs.UtteranceMeaningPair("the", {self.hypothesis})

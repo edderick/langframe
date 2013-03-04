@@ -11,10 +11,11 @@ and can train on utterance-meaning pairs).
 """
 
 import copy
+from training.expression import BottomExpression
 import utils.logger
 from symbol_set import SymbolSet, UniversalSymbolSet
 from symbol_table import FiniteSymbolTable, UniversalSymbolTable
-from training.pairs import BottomExpression
+
 
 class NPSymbolLearner:
     def __init__(self, necessary=FiniteSymbolTable(), possible=UniversalSymbolTable()):
