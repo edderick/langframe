@@ -1,4 +1,4 @@
-import logging, sys
+import logging, sys, inspect
 
 class NPLogger():
     def __init__(self):
@@ -12,10 +12,15 @@ class NPLogger():
         instance_name = id(self)
         full_name = "%s.%s" % (class_name, instance_name)
 
+        # lookup which function in which file created this logger
+        caller_funcname = inspect.stack()[2][3]
+        caller_filename = inspect.stack()[2][1]
+
         self.root_logger = logging.getLogger("langframe.root.%s" % full_name)
         self.debug_logger = logging.getLogger("langframe.debug.%s" % full_name)
 
-        self.root_logger.info("%s Initialised from %s" % (full_name, "TODO"))
+        self.root_logger.info("%s Initialised from %s in %s" %
+                              (full_name, caller_funcname, caller_filename))
 
     def info(self, message):
         self.root_logger.info(message)
