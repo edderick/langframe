@@ -130,8 +130,6 @@ class SenseAssignment(unittest.TestCase):
         #print self.noisy_learner.confidence
 
     def test1(self):
-        self.assertTrue(False)
-        pass
         utm_pair = training.pairs.UtteranceMeaningPair("john saw mary arrive at the ball",
             {Hypothesis(["SEE", "john", ["GO", "mary", ["TO", ["BE", "mary", ["AT", "party"]]]]])})
 

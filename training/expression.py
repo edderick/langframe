@@ -77,12 +77,24 @@ class Expression(object):
 
         return self.const_counts, self.var_counts
 
+    def general_form(self):
+        if isinstance(self.subexpressions[0], ConstantExpression):
+            general_subexpr = [self.subexpressions[0].name]
+
+            for remaining_subexpr in self.subexpressions[1:]:
+                general_subexpr.append("x")
+
+            return {Expression(general_subexpr)}
+        else:
+            return set()
+
     def deep_subexpressions(self):
         """Determine all possible subexpressions of this Expression"""
         subexpression_set = set()
 
         # this expression is a subexpression of itself (trivially)
         subexpression_set = subexpression_set.union( {self} )
+        subexpression_set = subexpression_set.union( self.general_form() )
 
         # recurse; this will terminate for RootExpressions
         for subexpression in self.subexpressions:
@@ -121,7 +133,9 @@ class RootExpression(object):
             return self.name == other.name
 
     def deep_subexpressions(self):
-#        print "root %s" % self
+        return set()
+
+    def general_form(self):
         return set()
 
 

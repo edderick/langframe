@@ -1,5 +1,5 @@
 import unittest
-from training.expression import Expression
+from training.expression import Expression, BottomExpression
 from training.hypothesis import Hypothesis
 
 import training.pairs
@@ -246,12 +246,12 @@ class ConceptualExpressionRules(unittest.TestCase):
         p.add("ball", "ball")
 
         self.learner = basic_learner.NPSymbolLearner(necessary=n, possible=p)
-        self.hypothesis = Hypothesis(["CAUSE", ["john", ["GO", ["ball" , ["TO", "john"]]]]])
+        self.hypothesis = Hypothesis(["CAUSE", "john", ["GO", "ball", ["TO", "john"]]])
 
     def testEmptyTerms(self):
         utm_pair = training.pairs.UtteranceMeaningPair("the", {self.hypothesis})
         self.learner._rule5(utm_pair)
-        self.assertEqual(len(self.learner.expressions["the"]), 0)
+        self.assertEqual(self.learner.expressions["the"], {BottomExpression()})
 
     def testVariableTerms(self):
         utm_pair = training.pairs.UtteranceMeaningPair("john", {self.hypothesis})
@@ -283,6 +283,12 @@ class ConceptualExpressionRules(unittest.TestCase):
             self.assertIn("GO", expression)
             self.assertIn("TO", expression)
             self.assertIn("CAUSE", expression)
+
+    def testGeneralConstantTerms(self):
+        general = self.hypothesis.bound_expression.general_form()
+        self.assertEqual(general,
+                         training.hypothesis.Hypothesis(["CAUSE", "x", "x"]).bound_expression)
+        print general
 
 if __name__ == "__main__":
     unittest.main()
