@@ -1,6 +1,10 @@
 import unittest
+import utils.logger
+
 from training.expression import Expression
 from knowledge import knn_colour
+
+utils.logger.display_log("langframe.data.ColourLogger")
 
 class TestAddingExpressions(unittest.TestCase):
     def setUp(self):

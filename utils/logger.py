@@ -15,6 +15,7 @@ class Logger():
 
         self.root_logger = logging.getLogger("langframe.root.%s" % subchannel)
         self.debug_logger = logging.getLogger("langframe.debug.%s" % subchannel)
+        self.data_logger = logging.getLogger("langframe.data.%s" % subchannel)
 
         self.root_logger.info("%s Initialised from %s in %s" %
                               (subchannel, caller_funcname, caller_filename))

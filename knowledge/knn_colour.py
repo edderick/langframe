@@ -1,6 +1,9 @@
 from itertools import izip
 from collections import Counter
 from training.expression import Expression
+from knowledge.logger.colour_logger import ColourLogger
+
+import random
 
 class KNNColourSemantics:
     """
@@ -13,10 +16,10 @@ class KNNColourSemantics:
     """
 
     def __init__(self, k=3):
-       self.k = k
-       self.points = []
-       self.words = []
-       pass
+        self.k = k
+        self.points = []
+        self.words = []
+        self.log = ColourLogger()
 
     def _unpack_expression(self, expression):
         """Abstract away unpacking of numerical (R,G,B) tuple from expressions of the
@@ -29,8 +32,11 @@ class KNNColourSemantics:
         learning algorithm in the framework)."""
 
         # maintain two (ordered) lists of points & colour words
-        self.points.append(self._unpack_expression(expression))
+        point = self._unpack_expression(expression)
+        self.points.append(point)
         self.words.append(word)
+
+        self.log.new_point(word, point)
 
     def word_for(self, expression):
         """Query to get a word for a certain colour value (point). This may
@@ -60,4 +66,10 @@ class KNNColourSemantics:
         if word not in self.words:
             return Expression("MISUNDERSTOOD")
         else:
+            # terrible solution! bad Sam!
+            for i in range(50):
+                point = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255) )
+                expression = Expression("COLOUR", "r_%d" % point[0], "g_%d" % point[1], "b_%d" % point[2])
+                if self.word_for(expression) is word:
+                    return expression
             pass
