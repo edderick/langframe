@@ -40,5 +40,16 @@ class TestAddingExpressions(unittest.TestCase):
 
         self.assertEqual(self.knowledge.expression_for("blue"), Expression("MISUNDERSTOOD"))
 
+    def testReturnColourValue(self):
+        black_expr = Expression(["COLOUR", "r_0", "g_0", "b_0"])
+        dark_red = Expression(["COLOUR", "r_125", "g_0", "b_0"])
+        reddish_expr = Expression(["COLOUR", "r_250", "g_25", "b_30"])
+
+        self.knowledge.learn("black", black_expr)
+        self.knowledge.learn("red", dark_red)
+        self.knowledge.learn("red", reddish_expr)
+
+        self.knowledge.expression_for("red")
+
 if __name__ == '__main__':
     unittest.main()

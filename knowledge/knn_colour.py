@@ -69,7 +69,7 @@ class KNNColourSemantics:
             # terrible solution! bad Sam!
             for i in range(50):
                 point = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255) )
-                expression = Expression("COLOUR", "r_%d" % point[0], "g_%d" % point[1], "b_%d" % point[2])
+                expression = Expression(["COLOUR", "r_%d" % point[0], "g_%d" % point[1], "b_%d" % point[2]])
                 if self.word_for(expression) is word:
                     return expression
             pass
