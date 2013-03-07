@@ -1,0 +1,5 @@
+0,0,255,darkblue
+0,255,255,cyan
+125,125,255,lightblue
+255,0,255,purple
+255,255,255,white
