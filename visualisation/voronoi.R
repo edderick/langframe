@@ -9,22 +9,36 @@ colours <- read.delim("stdin",
             stringsAsFactors=TRUE,
             header=FALSE, 
             na.strings="")
-names(colours) <- c("r", "g", "b", "word")
-col.values <- colours[c('r', 'g')] / 255
+names(colours) <- c("label", "r", "g", "b", "word")
+col.values <- colours[c('r', 'g', 'b')] / 255
 
 colours
 col.values
 
-# plot known colour points (R,G values)
-plot(colours[c("r","g")], pch=21, bg=rgb(col.values$r,col.values$g,1))
+avg.r <- tapply(col.values$r, colours$word, mean)
+avg.g <- tapply(col.values$g, colours$word, mean)
+avg.b <- tapply(col.values$b, colours$word, mean)
+
+avg.for.r <- lapply(colours$word, function(word) avg.r[word])
+avg.for.g <- lapply(colours$word, function(word) avg.g[word])
+avg.for.b <- lapply(colours$word, function(word) avg.b[word])
 
 # generate & display Voronoi (nearest neighbour polygon
 # visualisation) and display on top
-twodcolour.voronoi <- voronoi.mosaic(colours$r, colours$g,
+twodcolour.vm <- voronoi.mosaic(colours$r, colours$g,
                         duplicate="remove" )
-plot(twodcolour.voronoi,
-            main="Voronoi Plot",
+plot(twodcolour.vm,
             sub="for sample 2D colour data",
-            xlim=c(0,255),
-            ylim=c(0,255),
-            add=TRUE)
+            col="gray",
+            xlab="r",
+            ylab="g" 
+            )
+
+# plot known colour points (R,G values)
+points(colours[c("r","g")], 
+        pch=21, 
+        cex=1.8,
+        col="gray",
+        bg=rgb(avg.for.r, avg.for.g, avg.for.b))
+
+warnings()
