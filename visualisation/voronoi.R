@@ -28,8 +28,8 @@ avg.b <- lapply(colours$word, function(word) avg.b.for[word])
 twodcolour.vm <- voronoi.mosaic(colours$r, colours$g,
                         duplicate="remove" )
 plot(twodcolour.vm,
-            main="Hello",
-            sub="for sample 2D colour data",
+            main="Voronoi plot for R,G,B=255 boundaries",
+            sub=paste("Language: ", colours$label[1]),
             col="gray",
             xlab="r",
             ylab="g" 
