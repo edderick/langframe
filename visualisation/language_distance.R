@@ -28,8 +28,8 @@ for(combination in args) {
     lang.name.2 <- langs[[1]][2]
 
     # select these labels
-    data.l1 <- subset(all.data, label==lang.name.1)
-    data.l2 <- subset(all.data, label==lang.name.2)
+    data.l1 <- subset(all.data, lang.name==lang.name.1)
+    data.l2 <- subset(all.data, lang.name==lang.name.2)
 
     # calculate which proportion are differently labelled
     count.total <- nrow(data.l1)
