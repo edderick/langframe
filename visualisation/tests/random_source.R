@@ -6,6 +6,8 @@
 # Splits RGB cube into 8 subcubes with name label, then randomly generates points
 # in these subcubes
 
+args <- commandArgs(TRUE)
+
 names.list <- c("black", "darkblue", "green", "red", "cyan", "yellow", 
                     "magenta", "white") # binary encoding of colour names 
 
@@ -17,7 +19,9 @@ subcube.bounds <- as.data.frame(subcube.bounds)
 names(subcube.bounds) <- c("r","g","b")
 subcube.bounds$labels <- names.list
 
-n <- 4
+
+n <- as.numeric(args[1])
+
 subcube.bounds <- do.call("rbind", replicate(n, subcube.bounds, simplify=FALSE))
 
 # randomly generate a point for some subcube
@@ -41,6 +45,5 @@ lang.name <- c("random")
 subcube.points <- cbind(lang.name, subcube.points)
 write.table(subcube.points, quote=FALSE, sep=",", row.names=FALSE, col.names=FALSE)
 
-# TODO: use command line input for n
 # TODO: write script to flat project onto some 2 axes 
 # TODO: modify distance script (hang on...) & voronoi to take 2 dimensions
