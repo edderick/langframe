@@ -49,6 +49,6 @@ subcube.points$labels <- names.list
 # add language name & output this in friendly way
 lang.name <- c("random")
 subcube.points <- cbind(lang.name, subcube.points)
-write.table(subcube.points, quote=FALSE, sep=",", row.names=FALSE, col.names=FALSE)
+write.table(subcube.points, quote=FALSE, sep=",", row.names=FALSE)
 
 # TODO: modify distance script (hang on...) & voronoi to take 2 dimensions

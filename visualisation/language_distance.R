@@ -17,9 +17,8 @@ args <- commandArgs(TRUE)
 all.data <- read.delim("stdin",
                 sep=",",
                 stringsAsFactors=TRUE,
-                header=FALSE,
+                header=TRUE,
                 na.strings="")
-names(all.data) <- c("label", "r", "g", "b", "word")
 
 # for each 2-combination of language labels to compare...
 for(combination in args) {

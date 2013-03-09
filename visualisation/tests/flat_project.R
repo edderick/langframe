@@ -16,9 +16,8 @@ args <- commandArgs(TRUE)
 all.data <- read.delim("stdin",
                 sep=",",
                 stringsAsFactors=TRUE,
-                header=FALSE,
+                header=TRUE,
                 na.strings="")
-names(all.data) <- c("label", "r", "g", "b", "word")
 
 # project onto RG subspace
 all.data$x <- switch(args[1],
@@ -35,4 +34,4 @@ all.data$y <- switch(args[1],
     {print("no subspace arg")}
 )
 
-write.table(all.data, quote=FALSE, sep=",", row.names=FALSE, col.names=FALSE)
+write.table(all.data, quote=FALSE, sep=",", row.names=FALSE)
