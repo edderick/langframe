@@ -23,7 +23,7 @@ subcube.bounds <- matrix(c(0,0,0,0,0,1,0,1,0,1,0,0,0,1,1,1,1,0,1,0,1,1,1,1),
                             nrow=8, ncol=3, byrow=TRUE)
 subcube.bounds <- as.data.frame(subcube.bounds)
 names(subcube.bounds) <- c("r","g","b")
-subcube.bounds$labels <- names.list
+subcube.bounds$word <- names.list
 
 
 n <- as.numeric(args[1])
@@ -44,11 +44,9 @@ row.random.point <- function(rgb) {
 subcube.points <- t(apply(subcube.bounds[c("r","g","b")], 1, row.random.point))
 subcube.points <- as.data.frame(subcube.points)
 names(subcube.points) <- c("r","g","b")
-subcube.points$labels <- names.list
+subcube.points$word <- names.list
 
 # add language name & output this in friendly way
 lang.name <- c("random")
 subcube.points <- cbind(lang.name, subcube.points)
 write.table(subcube.points, quote=FALSE, sep=",", row.names=FALSE)
-
-# TODO: modify distance script (hang on...) & voronoi to take 2 dimensions

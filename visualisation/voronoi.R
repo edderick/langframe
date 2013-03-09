@@ -7,9 +7,8 @@ library(ggplot2)
 colours <- read.delim("stdin", 
             sep=",", 
             stringsAsFactors=TRUE,
-            header=FALSE, 
-            na.strings="")
-names(colours) <- c("label", "r", "g", "b", "word")
+            header=TRUE)
+colours
 
 # scale 0-255 colour values to 0-1 range, so they can be displayed
 colours[c('r', 'g', 'b')] <- colours[c('r', 'g', 'b')] / 255
@@ -25,21 +24,19 @@ avg.b <- lapply(colours$word, function(word) avg.b.for[word])
 
 # generate & display Voronoi (nearest neighbour polygon
 # visualisation) and display on top
-twodcolour.vm <- voronoi.mosaic(colours$r, colours$g,
+twodcolour.vm <- voronoi.mosaic(colours$x, colours$y,
                         duplicate="remove" )
 plot(twodcolour.vm,
-            main="Voronoi plot for R,G,B=255 boundaries",
-            sub=paste("Language: ", colours$label[1]),
+            main="Voronoi plot",
+            sub=paste("Language: ", colours$lang.name[1]),
             col="gray",
-            xlab="r",
-            ylab="g" 
+            xlab="x",
+            ylab="y" 
             )
 
 # plot known colour points (with colour of the average for its word)
-points(colours[c("r","g")], 
+points(colours[c("x","y")], 
         pch=21, 
         cex=1.8,
         col="gray",
         bg=rgb(avg.r, avg.g, avg.b))
-
-warnings()
