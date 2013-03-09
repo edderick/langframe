@@ -51,5 +51,4 @@ lang.name <- c("random")
 subcube.points <- cbind(lang.name, subcube.points)
 write.table(subcube.points, quote=FALSE, sep=",", row.names=FALSE, col.names=FALSE)
 
-# TODO: write script to flat project onto some 2 axes 
 # TODO: modify distance script (hang on...) & voronoi to take 2 dimensions

@@ -35,6 +35,4 @@ all.data$y <- switch(args[1],
     {print("no subspace arg")}
 )
 
-all.data$y <- all.data$r
-
-all.data
+write.table(all.data, quote=FALSE, sep=",", row.names=FALSE, col.names=FALSE)
