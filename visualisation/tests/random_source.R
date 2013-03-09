@@ -6,6 +6,12 @@
 # Splits RGB cube into 8 subcubes with name label, then randomly generates points
 # in these subcubes
 
+# USAGE: ./random_source.R [n]
+#                           where n is the number of points per word
+# INPUT: None
+# OUTPUT: languagelabel,r,g,b,word
+#           where languagelabel = "random"
+
 args <- commandArgs(TRUE)
 
 names.list <- c("black", "darkblue", "green", "red", "cyan", "yellow", 

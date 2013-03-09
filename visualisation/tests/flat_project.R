@@ -6,6 +6,8 @@
 #
 # USAGE: ./flat_project.R [subspace]
 #                           where [subspace] = RG or GB or RB
+# INPUT: standard language format
+# OUTPUT: standard language format + x,y for 2D projected co-ordinates
 
 args <- commandArgs(TRUE)
 
