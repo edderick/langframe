@@ -8,7 +8,6 @@ colours <- read.delim("stdin",
             sep=",", 
             stringsAsFactors=TRUE,
             header=TRUE)
-colours
 
 # scale 0-255 colour values to 0-1 range, so they can be displayed
 colours[c('r', 'g', 'b')] <- colours[c('r', 'g', 'b')] / 255

@@ -9,11 +9,34 @@
 # compare lang1 with lang2 and lang2 with lang3
 
 # USAGE: ./language_distance.R lang1,lang2 lang2,lang3
+#           -k --nearest : how many nearest neighbours?
+#           -n --samples : how many random points to test?
+#           -f --flat    : if this flag is present, use (x,y) at end for calculating
+#                           k nearest neighbours
 # INPUT: standard language format
 # OUTPUT: single value measure of distance
 
-args <- commandArgs(TRUE)
+library(optparse)
 
+# parse command line arguments
+option.list <- list(
+    make_option(c("-k", "--nearest"), type="integer", default=1),
+    make_option(c("-n", "--samples"), type="integer", default=100),
+    make_option(c("-f", "--flat"), action="store_true", default=FALSE) )
+
+option.parser <- OptionParser(usage="usage: %prog [options]",
+                                option_list=option.list,
+                                add_help_option=TRUE)
+
+options <- parse_args(option.parser, args=commandArgs(trailingOnly=TRUE),
+                        positional_arguments=TRUE)
+
+k.nearest <- options$options$nearest
+n.samples <- options$options$samples
+use.flat <- options$options$flat
+lang.pairs <- options$args
+
+# collect data from stdin into data frame
 all.data <- read.delim("stdin",
                 sep=",",
                 stringsAsFactors=TRUE,
@@ -21,9 +44,9 @@ all.data <- read.delim("stdin",
                 na.strings="")
 
 # for each 2-combination of language labels to compare...
-for(combination in args) {
+for(pair in args) {
     # work out names (should be 2 comma-separated labels)
-    langs <- strsplit(combination, ",")
+    langs <- strsplit(pair, ",")
     lang.name.1 <- langs[[1]][1]
     lang.name.2 <- langs[[1]][2]
 

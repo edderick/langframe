@@ -18,6 +18,7 @@ all.data <- read.delim("stdin",
                 stringsAsFactors=TRUE,
                 header=TRUE,
                 na.strings="")
+all.data$lang.name <- paste(all.data$lang.name, "_", args[1], sep="")
 
 # project onto RG subspace
 all.data$x <- switch(args[1],
