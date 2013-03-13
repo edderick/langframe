@@ -33,6 +33,7 @@ knn.classify <- function(element) {
 # perform KNN classification on new data points to get colour labels
 new.colours <- apply(data.test, 1, knn.classify)
 data.test$word <- new.colours
+data.test$lang.name <- paste(data.test$lang.name, "_", k.nearest,"nn", sep="")
 
 new.data <- rbind(data.train, data.test)
 

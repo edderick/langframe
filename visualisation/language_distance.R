@@ -16,14 +16,7 @@
 library(optparse)
 
 # parse command line arguments
-option.list <- list(make_option(c("-k", "--nearest"), type="integer", default=1))
-option.parser <- OptionParser(usage="usage: %prog [options]", option_list=option.list,
-                                add_help_option=TRUE)
-options <- parse_args(option.parser, args=commandArgs(trailingOnly=TRUE),
-                        positional_arguments=TRUE)
-
-k.nearest <- options$options$nearest
-lang.pairs <- options$args
+args <- commandArgs(TRUE)
 
 # collect data from stdin into data frame
 all.data <- read.delim("stdin",
@@ -40,12 +33,9 @@ for(pair in args) {
     lang.name.1 <- langs[[1]][1]
     lang.name.2 <- langs[[1]][2]
 
-
     # select these labels
     data.l1 <- subset(all.data, lang.name==lang.name.1)
     data.l2 <- subset(all.data, lang.name==lang.name.2)
-
-    # TODO: set colour names for these langs with KNN
 
     # calculate which proportion are differently labelled
     count.total <- nrow(data.l1)

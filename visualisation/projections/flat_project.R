@@ -10,14 +10,28 @@
 # OUTPUT: standard language format
 
 args <- commandArgs(TRUE)
-projection.type <- args[1]
+lang.name <- args[1]
+projection.type <- args[2]
 
 all.data <- read.delim("stdin",
                 sep=",",
                 stringsAsFactors=TRUE,
                 header=TRUE,
                 na.strings="")
-all.data$lang.name <- paste(all.data$lang.name, "_", projection.type, sep="")
+
+new.name.test <- paste(lang.name, "_", projection.type, sep="")
+new.name.def <- paste(lang.name, "_", projection.type, ".def", sep="")
+
+def.subset.log <- grepl("def$", all.data$lang.name)
+test.subset.log <- !def.subset.log
+
+def.subset <- all.data[def.subset.log,]
+test.subset<- all.data[test.subset.log,]
+
+def.subset$lang.name <- new.name.def
+test.subset$lang.name <- new.name.test
+
+all.data <- rbind(def.subset, test.subset)
 
 # project onto RG subspace
 
