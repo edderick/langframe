@@ -46,10 +46,6 @@ subcube.points <- as.data.frame(subcube.points)
 names(subcube.points) <- c("r","g","b")
 subcube.points$word <- names.list
 
-subcube.points$x <- subcube.points$r
-subcube.points$y <- subcube.points$g
-subcube.points$z <- subcube.points$b
-
 # add language name & output this in friendly way
 lang.name <- c("random.def")
 subcube.points <- cbind(lang.name, subcube.points)
