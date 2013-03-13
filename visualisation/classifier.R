@@ -1,5 +1,10 @@
 #!/usr/bin/RScript
 
+# This labels the samples by the inputted point distance metrics (i.e. so a
+# projection could be tested instead of standard 3D point) according to a
+# k-nearest-neighbour classification from the "training set" (".def"s)
+
+# USAGE: ./classifier [k]
 
 args <- commandArgs(TRUE)
 chosen.lang.name <- args[1]

@@ -1,7 +1,9 @@
 #!/usr/bin/Rscript
 
-# Using a language definition on stdin, this will generate n random samples 
-# with (r,g,b) and (x,y,z) values
+# "Sampler" + "Amplifier"
+# Using a language definition on stdin (lang.name + ".def"), this will generate n 
+# random samples with (r,g,b) and (x,y,z) values
+# USAGE: ./samplifier [langname] [num.samples]
 
 args <- commandArgs(TRUE)
 lang.name <- args[1]

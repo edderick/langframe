@@ -8,8 +8,7 @@
 # include as args comma-separated pairs of language labels to compare, e.g. to
 # compare lang1 with lang2 and lang2 with lang3
 
-# USAGE: ./language_distance.R lang1,lang2 lang2,lang3
-#           -k --nearest : how many nearest neighbours?
+# USAGE: ./language_distance.R [lang1,lang2] .. [lang2,lang3]
 # INPUT: standard language format
 # OUTPUT: single value measure of distance
 

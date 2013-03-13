@@ -7,10 +7,10 @@
 # in these subcubes
 
 # USAGE: ./random_source.R [n]
-#                           where n is the number of points per word
+#                           n: is the number of points per word
 # INPUT: None
 # OUTPUT: languagelabel,r,g,b,word,x,y,z
-#           where languagelabel = "random"
+#           where languagelabel = "random.def"
 
 args <- commandArgs(TRUE)
 

@@ -19,6 +19,8 @@ all.data <- read.delim("stdin",
                 header=TRUE,
                 na.strings="")
 
+# Add projection type to end of language name but make sure ".def" stays at 
+# end of language name for training examples
 new.name.test <- paste(lang.name, "_", projection.type, sep="")
 new.name.def <- paste(lang.name, "_", projection.type, ".def", sep="")
 
@@ -34,7 +36,6 @@ test.subset$lang.name <- new.name.test
 all.data <- rbind(def.subset, test.subset)
 
 # project onto RG subspace
-
 if (projection.type == "RG") {
     all.data$z <- rep(0, nrow(all.data))
 } else if (projection.type == "GB") {
