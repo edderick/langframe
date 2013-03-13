@@ -14,9 +14,9 @@ all.data <- read.delim("stdin",
                  na.strings="")
 
 col.lang.name <- rep(lang.name, n.samples)
-col.r <- sample(0:255, n.samples)
-col.g <- sample(0:255, n.samples)
-col.b <- sample(0:255, n.samples)
+col.r <- sample(0:255, n.samples, replace=TRUE)
+col.g <- sample(0:255, n.samples, replace=TRUE)
+col.b <- sample(0:255, n.samples, replace=TRUE)
 col.colour.name <- rep(NA, n.samples)
 
 new.points <- data.frame(lang.name=col.lang.name, r=col.r, g=col.g, b=col.b,
