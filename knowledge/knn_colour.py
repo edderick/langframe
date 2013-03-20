@@ -15,11 +15,11 @@ class KNNColourSemantics:
     learned points.
     """
 
-    def __init__(self, k=3):
+    def __init__(self, agent_name, k=3):
         self.k = k
         self.points = []
         self.words = []
-        self.log = ColourLogger()
+        self.log = ColourLogger(agent_name)
 
     def _unpack_expression(self, expression):
         """Abstract away unpacking of numerical (R,G,B) tuple from expressions of the

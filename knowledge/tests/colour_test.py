@@ -8,7 +8,7 @@ utils.logger.display_log("langframe.data.ColourLogger")
 
 class TestAddingExpressions(unittest.TestCase):
     def setUp(self):
-        self.knowledge = knn_colour.KNNColourSemantics()
+        self.knowledge = knn_colour.KNNColourSemantics("example")
 
     def testLearnSingle(self):
         red_expr = Expression(["COLOUR", "r_255", "g_0", "b_10"])
