@@ -12,7 +12,7 @@
 # INPUT: standard language format
 # OUTPUT: single value measure of distance
 
-library(optparse)
+suppressWarnings(library(optparse))
 
 # parse command line arguments
 args <- commandArgs(TRUE)
@@ -40,5 +40,5 @@ for(pair in args) {
     count.total <- nrow(data.l1)
     count.diff <- sum(data.l1$word != data.l2$word)
     count.proportion.error <- count.diff / count.total
-    print (count.proportion.error)
+    cat(count.proportion.error, "\n") # print to screen + newline
 }
