@@ -73,3 +73,13 @@ class KNNColourSemantics:
                 if self.word_for(expression) is word:
                     return expression
             pass
+
+    def say_something(self):
+        """Return a random UTM pair"""
+        col_expr = Expression(["COLOUR",
+                               "r_%d" % random.randint(0,255),
+                               "g_%d" % random.randint(0,255),
+                               "b_%d" % random.randint(0,255)  ])
+        word = self.word_for(col_expr)
+
+        return (word, col_expr)

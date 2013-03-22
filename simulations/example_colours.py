@@ -10,7 +10,7 @@ def get_colour_expression(rgb):
                                          "g_%d" % rgb[1],
                                          "b_%d" % rgb[2] ])
 
-colour = knowledge.knn_colour.KNNColourSemantics(k=1)
+colour = knowledge.knn_colour.KNNColourSemantics("agent", k=1)
 
 data = (
     ("darkblue", (0, 0, 255)),
