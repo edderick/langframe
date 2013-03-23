@@ -25,6 +25,8 @@ all.data <- read.delim("stdin",
                 na.strings="")
 
 
+cat("distance","\n") # csv header
+
 # for each 2-combination of language labels to compare...
 for(pair in args) {
     # work out names (should be 2 comma-separated labels)
