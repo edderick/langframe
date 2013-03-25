@@ -4,7 +4,8 @@ library(ggplot2)
 
 # output file name as first arg
 args <- commandArgs(TRUE)
-output.file.name <- args[1]
+pdf.file.name <- paste(args[1], ".pdf", sep="")
+
 
 # read colour data from STDIN into appropriate matrix form
 distances <- read.delim("stdin", 
@@ -19,4 +20,4 @@ distances$i <- seq(0,nrow(distances)-1)
 line.plot <- ggplot(data=distances, 
     aes(x=i, y=distance, group=1)) + geom_line() + geom_point()
 
-ggsave(file=output.file.name)
+ggsave(file=pdf.file.name)
