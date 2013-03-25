@@ -36,14 +36,13 @@ parser = argparse.ArgumentParser(
 parser.add_argument('files', 
     nargs='?', help='specify input files o/w stdin')
 
-group = parser.add_mutually_exclusive_group()
-group.add_argument('-I', '--iterations', dest="training_iterations",
+parser.add_argument('-I', '--iterations', dest="training_iterations",
                     type=int, nargs="?", default=100)
-group.add_argument('-N', '--samples', dest="num_samples",
+parser.add_argument('-N', '--samples', dest="num_samples",
                     type=int, nargs="?", default=1000)
-group.add_argument('--skip', dest="skip",
+parser.add_argument('--skip', dest="skip",
                     type=int, nargs="?", default=1)
-group.add_argument('--k', dest="knearest",
+parser.add_argument('--k', dest="knearest",
                     type=int, nargs="?", default=3)
 
 args = parser.parse_args()
