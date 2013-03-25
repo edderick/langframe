@@ -24,7 +24,7 @@ all.data <- read.delim("stdin",
                 header=TRUE,
                 na.strings="")
 
-cat("distance","\n") # csv header
+cat("lang1", "lang2", "distance","\n", sep=",") # csv header
 
 # for each 2-combination of language labels to compare...
 for(pair in args) {
@@ -41,5 +41,7 @@ for(pair in args) {
     count.total <- nrow(data.l1)
     count.diff <- sum(data.l1$word != data.l2$word)
     count.proportion.error <- count.diff / count.total
-    cat(count.proportion.error, "\n") # print to screen + newline
+    
+    # print to stdout
+    cat(lang.name.1, lang.name.2, count.proportion.error, "\n", sep=",") 
 }
