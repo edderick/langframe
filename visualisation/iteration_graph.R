@@ -11,10 +11,12 @@ pdf.file.name <- paste(args[1], ".pdf", sep="")
 distances <- read.delim("stdin", 
             sep=",", 
             allowEscapes=TRUE,
-            stringsAsFactors=TRUE,
+            stringsAsFactors=FALSE,
             header=TRUE)
 
-distances$i <- seq(0,nrow(distances)-1)
+
+# get bit of string after "_" (i.e. iteration number)
+distances$i <- as.numeric(substr(distances$lang2, 7, nchar(distances$lang2)))
 
 # generate line plot
 line.plot <- ggplot(data=distances, 
