@@ -18,6 +18,6 @@ distances$i <- seq(0,nrow(distances)-1)
 
 # generate line plot
 line.plot <- ggplot(data=distances, 
-    aes(x=i, y=distance, group=1)) + geom_line() + geom_point()
+    aes(x=i, y=distance, group=1)) + ylim(0,1) + geom_line() + geom_point()
 
 ggsave(file=pdf.file.name)
