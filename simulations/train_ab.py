@@ -30,9 +30,11 @@ def probe_colour(lang_name, learner, rgb):
 
 
 # parse command line arguments
-parser = argparse.ArgumentParser(description="test training from one agent to another")
+parser = argparse.ArgumentParser(
+    description="test training from one agent to another")
 
-parser.add_argument('files', nargs='?', help='specify input files o/w stdin')
+parser.add_argument('files', 
+    nargs='?', help='specify input files o/w stdin')
 
 group = parser.add_mutually_exclusive_group()
 group.add_argument('-I', '--iterations', dest="training_iterations",
@@ -65,8 +67,10 @@ for line in fileinput.input(args.files):
 print "lang.name,word"
 
 # pick sample of N random colours
-test_colours = [(random.randint(0,255), random.randint(0,255), random.randint(0,255))
-                    for i in range(args.num_samples)]
+test_colours = [
+    (random.randint(0,255), 
+     random.randint(0,255), 
+     random.randint(0,255)) for i in range(args.num_samples)]
 
 # output for learner A
 for rgb_tuple in test_colours:
