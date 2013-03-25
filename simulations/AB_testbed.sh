@@ -2,6 +2,7 @@ POINTS_PER_WORD=2
 REPEATS=5
 TRAINING_ITERATIONS=25
 SAMPLES=1000
+SKIP=5
 K=3 #unused
 
 cd ..
@@ -17,7 +18,7 @@ echo $i
 visualisation/tests/random_source.R $POINTS_PER_WORD > simulations/logs/sample_$i
 echo "done sample"
 
-python -m simulations.train_ab simulations/logs/sample_$i -I $TRAINING_ITERATIONS -N $SAMPLES > simulations/logs/ab_$i
+python -m simulations.train_ab simulations/logs/sample_$i -I $TRAINING_ITERATIONS -N $SAMPLES --skip $SKIP > simulations/logs/ab_$i
 echo "done simulation"
 
 cat simulations/logs/ab_$i | visualisation/language_distance.R $(visualisation/argsAB.py) > simulations/logs/dist_$i
