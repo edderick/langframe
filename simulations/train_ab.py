@@ -76,9 +76,10 @@ for rgb_tuple in test_colours:
     probe_colour("langA", learnerA, rgb_tuple)
 
 # iteratively train learner B on A's utterances (N iterations)
-for i in range(0, args.training_iterations, args.skip):
+for i in range(0, args.training_iterations):
     (word, meaning) = learnerA.say_something()
     learnerB.learn(word, meaning)
 
-    for rgb_tuple in test_colours:
-        probe_colour("langB_%d" % i, learnerB, rgb_tuple)
+    if i % args.skip == 0:
+        for rgb_tuple in test_colours:
+            probe_colour("langB_%d" % i, learnerB, rgb_tuple)
