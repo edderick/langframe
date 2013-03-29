@@ -39,23 +39,23 @@ class GaussianColourSemantics:
 
         point = self._unpack_expression(expression)
 
-        if word in mean.keys():
+        if word in self.mean.keys():
             self.n[word] += 1
             n = self.n[word]
 
             delta = map(lambda x,y: x-y, point, self.mean[word]) # X - Mean
             norm_delta = map(lambda x: float(x)/float(n), delta)
-            self.mean[word] = map(sum, self.mean[word], norm_delta)
+            self.mean[word] = tuple(map(lambda x,y: round(x+y), self.mean[word], norm_delta))
 
-            M2_delta = map(lambda x,y,z : x*(y-z), delta, point, self.mean[word])
-            self._M2[word] = map(sum, self._M2[word], M2_delta)
+            #M2_delta = map(lambda x,y,z : x*(y-z), delta, point, self.mean[word])
+            #self._M2[word] = map(sum, self._M2[word], M2_delta)
 
-            self.variance = map(lambda x: x / float(n - 1), self._M2[word])
+            #self.variance = map(lambda x: x / float(n - 1), self._M2[word])
 
         else:
             # set mean to current value
             self.n[word] = 1
-            self.means[word] = point
+            self.mean[word] = point
             self._M2[word] = (0.0,0.0,0.0)
             self.variance[word] = (0.0,0.0,0.0)
 
