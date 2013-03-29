@@ -76,7 +76,7 @@ class GaussianColourSemantics:
         if word not in self.means.keys():
             return Expression("MISUNDERSTOOD")
         else:
-            (r,g,b) = map(lambda mu,var: random.gauss(mu,math.sqrt(var)),
+            (r,g,b) = map(lambda mu,var: round(random.gauss(mu,math.sqrt(var))),
                             self.means[word], self.variances[word])
 
             return Expression(["COLOUR", "r_%d" % r, "g_%d" % g, "b_%d" % b])
