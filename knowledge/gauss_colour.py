@@ -3,6 +3,7 @@ from training.expression import Expression
 from knowledge.logger.colour_logger import ColourLogger
 
 import random
+import math
 
 class GaussianColourSemantics:
     """
@@ -73,11 +74,16 @@ class GaussianColourSemantics:
         """Return a typical colour value (point) belonging to a colour label"""
 
         # first check colour label exists, otherwise return MISUNDERSTOOD expression
-        if word not in self.means.keys():
+        if word not in self.mean.keys():
             return Expression("MISUNDERSTOOD")
         else:
+            # pick random point according to Gaussiandistribution of word
             (r,g,b) = map(lambda mu,var: round(random.gauss(mu,math.sqrt(var))),
-                            self.means[word], self.variances[word])
+                            self.mean[word], self.variance[word])
+
+            # makeshift bounds handling: clamp co-ords to 0..255 range
+            (r,g,b) = map(lambda x: 0 if x < 0 else x, (r,g,b))
+            (r,g,b) = map(lambda x: 255 if x > 255 else x, (r,g,b))
 
             return Expression(["COLOUR", "r_%d" % r, "g_%d" % g, "b_%d" % b])
 
