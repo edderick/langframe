@@ -38,10 +38,7 @@ class Training(unittest.TestCase):
         self.assertEqual(self.knowledge.variance["mycol"], (0,0,0))
 
         self.knowledge.learn("mycol", p2)
-        self.assertTrue(False)
-
-        self.knowledge.learn("mycol", p3)
-        self.assertTrue(False)
+        self.assertEqual(self.knowledge.variance["mycol"], (144.5,1512.5,18.0))
 
 if __name__ == '__main__':
     unittest.main()

@@ -39,25 +39,25 @@ class GaussianColourSemantics:
 
         point = self._unpack_expression(expression)
 
-        if word in self.mean.keys():
-            self.n[word] += 1
-            n = self.n[word]
+        if word not in self.mean.keys():
+            self.n[word] = 0
+            self.mean[word] = (0,0,0)
+            self._M2[word] = (0,0,0)
 
-            delta = map(lambda x,y: x-y, point, self.mean[word]) # X - Mean
-            norm_delta = map(lambda x: float(x)/float(n), delta)
-            self.mean[word] = tuple(map(lambda x,y: round(x+y), self.mean[word], norm_delta))
+        self.n[word] += 1
+        n = self.n[word]
 
-            #M2_delta = map(lambda x,y,z : x*(y-z), delta, point, self.mean[word])
-            #self._M2[word] = map(sum, self._M2[word], M2_delta)
+        delta = map(lambda x,mean: x-mean, point, self.mean[word]) # X - Mean
+        norm_delta = map(lambda delt: float(delt)/float(n), delta)
+        self.mean[word] = tuple(map(lambda m,nd: m+nd, self.mean[word], norm_delta))
 
-            #self.variance = map(lambda x: x / float(n - 1), self._M2[word])
+        M2_delta = map(lambda x,y,z : x*(y-z), delta, point, self.mean[word])
+        self._M2[word] = map(lambda x,y: x+y, self._M2[word], M2_delta)
 
+        if n != 1:
+            self.variance[word] = tuple(map(lambda x: x / float(n - 1), self._M2[word]))
         else:
-            # set mean to current value
-            self.n[word] = 1
-            self.mean[word] = point
-            self._M2[word] = (0.0,0.0,0.0)
-            self.variance[word] = (0.0,0.0,0.0)
+            self.variance[word] = (0,0,0)
 
         self.log.new_point(word, point)
 
