@@ -15,7 +15,7 @@ import random
 import argparse
 
 from training.expression import Expression
-from knowledge import knn_colour
+from knowledge import gauss_colour
 
 def get_colour_expression(rgb):
     """ convert to proper expression format to be interpretec"""
@@ -48,8 +48,8 @@ parser.add_argument('--k', dest="knearest",
 args = parser.parse_args()
 
 # set up learner
-learnerA = knn_colour.KNNColourSemantics("A", k=args.knearest)
-learnerB = knn_colour.KNNColourSemantics("B", k=args.knearest)
+learnerA = gauss_colour.GaussianColourSemantics("A")
+learnerB = gauss_colour.GaussianColourSemantics("B")
 
 # train A from stdin
 for line in fileinput.input(args.files):
