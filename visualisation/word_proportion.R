@@ -19,8 +19,16 @@ pdf.file.name <- paste(args[1], ".pdf", sep="")
 samples <- read.delim("stdin", 
             sep=",", 
             allowEscapes=TRUE,
-            stringsAsFactors=TRUE,
+            stringsAsFactors=FALSE,
             header=TRUE)
 
-ggplot(samples, aes(x=lang.name,fill=word)) + geom_bar(position="fill")
+samples$i <- substr(samples$lang.name, 7, nchar(samples$lang.name))
+
+
+the.plot <- ggplot(samples, aes(x=i,fill=word)) + 
+                geom_bar(position="fill", binwidth=1) + 
+                scale_x_discrete() +
+                scale_y_continuous(expand = c(0, 0)) + 
+                theme_bw()
+
 ggsave(file=pdf.file.name)
