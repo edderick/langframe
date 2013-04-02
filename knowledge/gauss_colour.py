@@ -67,8 +67,27 @@ class GaussianColourSemantics:
         not in general be one-to-one, -- there may be multiple words
         for a single colour value, so a random word will be selected. 
         """
-        pass
+        point = self._unpack_expression(expression)
+        prob_density = dict()
 
+        # calculate probability density at point for each word
+        for word in self.n:
+            mean = self.mean[word]
+            variance = self.variance[word]
+
+            sq_diff = map(lambda x,mu,var: ((x-mu)**2)/var, point, mean, variance)
+            prob_density[word] = math.exp(-0.5 * sum(sq_diff))
+
+        # pick random number 0..sum(densities)
+        # build cumulative sum of densities for words until sum > random number
+        s = 0
+        random_num = random.random() * sum(prob_density[x] for x in prob_density) 
+
+        for word in prob_density:
+            s += prob_density[word] 
+            if s > random_num:
+                return word
+        return "WAT"
 
     def expression_for(self, word):
         """Return a typical colour value (point) belonging to a colour label"""
