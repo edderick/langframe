@@ -58,7 +58,7 @@ class GaussianColourSemantics:
         if n != 1:
             self.variance[word] = tuple(map(lambda x: x / float(n - 1), self._M2[word]))
         else:
-            self.variance[word] = (0,0,0)
+            self.variance[word] = (5,5,5) # small variance for new point
 
         self.log.new_point(word, point)
 
