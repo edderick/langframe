@@ -72,4 +72,4 @@ for i in range(0, args.training_iterations):
     learnerB.learn(word, meaning)
 
     if i % args.skip == 0:
-        logger.log_points("langB_%d" % i, test_colours)
+        logger.log_points("langB_%02d" % i, test_colours)

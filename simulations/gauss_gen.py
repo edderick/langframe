@@ -83,5 +83,5 @@ for generation in range(1,args.generations):
 
     # output sample from trained L(i+1)
     if i % args.skip == 0:
-        logger.log_points("langL_%d" % generation, test_colours)
-        logger.mean("langL_%d" % generation)
+        logger.log_points("langL_%02d" % generation, test_colours)
+        logger.mean("langL_%02d" % generation)
