@@ -44,8 +44,6 @@ args = parser.parse_args()
 # set up L0 & train from stdin
 learnerB = knn_colour.KNNColourSemantics("L_0", k=args.knearest)
 
-# set up logger
-logger = logger.colour_logger.ColourLogger(learnerB)
 
 
 for line in fileinput.input(args.files):
@@ -68,8 +66,10 @@ test_colours = [
      random.randint(0,255)) for i in range(args.num_test_samples)]
 
 # set up logger
-logger.log_points("langL_0", test_colours)
 utils.logger.display_log("langframe.root.colour.sample")
+logger = logger.colour_logger.ColourLogger(learnerB)
+
+logger.log_points("langL_0", test_colours)
 
 # generation simulation
 for generation in range(1,args.generations):

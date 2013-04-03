@@ -17,8 +17,8 @@ class Logger():
         self.debug_logger = logging.getLogger("langframe.debug.%s" % subchannel)
         self.data_logger = logging.getLogger("langframe.data.%s" % subchannel)
 
-        self.root_logger.info("%s Initialised from %s in %s" %
-                              (subchannel, caller_funcname, caller_filename))
+        #self.root_logger.info("%s Initialised from %s in %s" %
+                              #(subchannel, caller_funcname, caller_filename))
 
     def info(self, message):
         """Method to log low-priority message (for any logger)"""
