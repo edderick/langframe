@@ -47,7 +47,7 @@ class ColourLogger(Logger):
 
         used_words = set(core_words)
         all_words = set(self.learner.n.keys())
-        extra_words = list(all_words.intersection(used_words))
+        extra_words = list(all_words.difference(used_words))
         extra_words.sort()
 
         for extra_word in extra_words:
