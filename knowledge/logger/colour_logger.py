@@ -1,22 +1,35 @@
 from utils.logger import Logger
+from training.expression import Expression
 
 class ColourLogger(Logger):
-    def __init__(self, agent_name):
+    def __init__(self, learner):
         Logger.__init__(self, "ColourLogger")
-        self.agent_name = agent_name
-        self.lang_name = "0"
+
+        self.learner = learner
+        self.full_name = learner.agent_name
+        
+        # on new point
         self.data_logger.info("lang.name,r,g,b,word,x,y,z")
 
-    def set_langname(self, lang_name):
-        """
-        The full name of the language is "agent_name.lang_name". This can be used
-        to differentiate between languages at different learning stages
-        """
-        self.lang_name = lang_name
+        # probe point & mean point
+        self.probe_logger = Logger("colour.sample")
+        self.mean_logger = Logger("colour.mean")
+
+        # output header CSV
+        self.probe_logger.info("lang.name,word")
+        self.mean_logger.info("lang.name,word, r, g, b")
+
+    def display_log(*channels):
+        Logger.display_log(*channels)
 
     def new_point(self, word, p):
-        full_name = ".".join((self.agent_name, self.lang_name))
         coordinates = ",".join(str(x) for x in p)
-
         self.data_logger.info("%s,%s,%s,%s" %
-                              (full_name, coordinates, word, coordinates))
+                              (self.learner.agent_name, coordinates, word, coordinates))
+
+    def log_points(self, lang_name, test_colours):
+        for rgb in test_colours:
+            expression = Expression(["COLOUR", "r_%d" % rgb[0],
+                                 "g_%d" % rgb[1],
+                                 "b_%d" % rgb[2] ])
+            self.probe_logger.info("%s,%s" % (lang_name, self.learner.word_for(expression)))

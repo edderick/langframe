@@ -16,10 +16,10 @@ class KNNColourSemantics:
     """
 
     def __init__(self, agent_name, k=3):
+        self.agent_name = agent_name
         self.k = k
         self.points = []
         self.words = []
-        self.log = ColourLogger(agent_name)
 
     def _unpack_expression(self, expression):
         """Abstract away unpacking of numerical (R,G,B) tuple from expressions of the
@@ -35,8 +35,6 @@ class KNNColourSemantics:
         point = self._unpack_expression(expression)
         self.points.append(point)
         self.words.append(word)
-
-        self.log.new_point(word, point)
 
     def word_for(self, expression):
         """Query to get a word for a certain colour value (point). This may

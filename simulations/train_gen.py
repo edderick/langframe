@@ -15,20 +15,10 @@ INPUT: piped to stdin or filename as first argument
 import fileinput
 import random
 import argparse
+import utils.logger
 
 from training.expression import Expression
-from knowledge import knn_colour
-
-def get_colour_expression(rgb):
-    """ convert to proper expression format to be interpretec"""
-    return Expression(["COLOUR", "r_%d" % rgb[0],
-                                 "g_%d" % rgb[1],
-                                 "b_%d" % rgb[2] ])
-
-def probe_colour(lang_name, learner, rgb):
-    """print relevant entry in appropriate CSV format to stdout"""
-    word = learner.word_for(get_colour_expression(rgb))
-    print "%s,%s" % (lang_name, word)
+from knowledge import knn_colour, logger
 
 
 # parse command line arguments
@@ -54,6 +44,10 @@ args = parser.parse_args()
 # set up L0 & train from stdin
 learnerB = knn_colour.KNNColourSemantics("L_0", k=args.knearest)
 
+# set up logger
+logger = logger.colour_logger.ColourLogger(learnerB)
+
+
 for line in fileinput.input(args.files):
     entry = line.split(",")
 
@@ -62,7 +56,10 @@ for line in fileinput.input(args.files):
 
     rgb = [int(x) for x in entry[1:4]]
     word = entry[4][:-1]
-    learnerB.learn(word, get_colour_expression(rgb))
+    learnerB.learn(word, 
+                        Expression(["COLOUR", "r_%d" % rgb[0],
+                                 "g_%d" % rgb[1],
+                                 "b_%d" % rgb[2] ]))
 
 # pick sample of N random colours
 test_colours = [
@@ -70,17 +67,15 @@ test_colours = [
      random.randint(0,255), 
      random.randint(0,255)) for i in range(args.num_test_samples)]
 
-# header on stdout
-print "lang.name,word"
-
-# output for learner L0
-for rgb_tuple in test_colours:
-    probe_colour("langL_0", learnerB, rgb_tuple)
+# set up logger
+logger.log_points("langL_0", test_colours)
+utils.logger.display_log("langframe.root.colour.sample")
 
 # generation simulation
 for generation in range(1,args.generations):
     learnerA = learnerB
     learnerB = knn_colour.KNNColourSemantics("L_%d" % generation, k=args.knearest)
+    logger.learner = learnerB
     
     # train L(i+1) (B) from L(i) (A)
     for i in range(0, args.num_train_samples):
@@ -89,5 +84,4 @@ for generation in range(1,args.generations):
 
     # output sample from trained L(i+1)
     if i % args.skip == 0:
-        for rgb_tuple in test_colours:
-            probe_colour("langL_%d" % generation, learnerB, rgb_tuple)
+        logger.log_points("langL_%d" % generation, test_colours)

@@ -15,19 +15,8 @@ import random
 import argparse
 
 from training.expression import Expression
-from knowledge import knn_colour
-
-def get_colour_expression(rgb):
-    """ convert to proper expression format to be interpretec"""
-    return Expression(["COLOUR", "r_%d" % rgb[0],
-                                 "g_%d" % rgb[1],
-                                 "b_%d" % rgb[2] ])
-
-def probe_colour(lang_name, learner, rgb):
-    """print relevant entry in appropriate CSV format to stdout"""
-    word = learner.word_for(get_colour_expression(rgb))
-    print "%s,%s" % (lang_name, word)
-
+from knowledge import knn_colour, logger
+import utils.logger
 
 # parse command line arguments
 parser = argparse.ArgumentParser(
@@ -51,6 +40,10 @@ args = parser.parse_args()
 learnerA = knn_colour.KNNColourSemantics("A", k=args.knearest)
 learnerB = knn_colour.KNNColourSemantics("B", k=args.knearest)
 
+# set up logger
+logger = logger.colour_logger.ColourLogger(learnerA)
+utils.logger.display_log("langframe.root.colour.sample")
+
 # train A from stdin
 for line in fileinput.input(args.files):
     entry = line.split(",")
@@ -60,10 +53,10 @@ for line in fileinput.input(args.files):
 
     rgb = [int(x) for x in entry[1:4]]
     word = entry[4][:-1]
-    learnerA.learn(word, get_colour_expression(rgb))
+    learnerA.learn(word, Expression(["COLOUR", "r_%d" % rgb[0],
+                                 "g_%d" % rgb[1],
+                                 "b_%d" % rgb[2] ]))
 
-# header on stdout
-print "lang.name,word"
 
 # pick sample of N random colours
 test_colours = [
@@ -72,14 +65,13 @@ test_colours = [
      random.randint(0,255)) for i in range(args.num_samples)]
 
 # output for learner A
-for rgb_tuple in test_colours:
-    probe_colour("langA", learnerA, rgb_tuple)
+logger.log_points("langA", test_colours)
 
 # iteratively train learner B on A's utterances (N iterations)
+logger.learner = learnerB
 for i in range(0, args.training_iterations):
     (word, meaning) = learnerA.say_something()
     learnerB.learn(word, meaning)
 
     if i % args.skip == 0:
-        for rgb_tuple in test_colours:
-            probe_colour("langB_%d" % i, learnerB, rgb_tuple)
+        logger.log_points("langB_%d" % i, test_colours)

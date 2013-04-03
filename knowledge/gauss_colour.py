@@ -17,6 +17,7 @@ class GaussianColourSemantics:
     """
 
     def __init__(self, agent_name, creative=True):
+        self.agent_name = agent_name
         self.creative = True
 
         self.n = dict()             # word => num training examples
