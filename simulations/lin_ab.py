@@ -28,6 +28,16 @@ def probe_colour(lang_name, learner, rgb):
     word = learner.word_for(get_colour_expression(rgb))
     print "%s,%s" % (lang_name, word)
 
+def probe_mean(lang_name, learner):
+    for word in ("black", "darkblue", "green", "red", "cyan", "yellow", "magenta", "white"):
+        try:
+            print "%s,%s,%d,%d,%d" % (lang_name, word, 
+                                    learner.mean[word][0],
+                                    learner.mean[word][1],
+                                    learner.mean[word][2])
+        except KeyError:
+            print "%s,%s,0,0,0" % (lang_name, word)
+
 
 # parse command line arguments
 parser = argparse.ArgumentParser(
@@ -64,6 +74,7 @@ for line in fileinput.input(args.files):
 
 # header on stdout
 print "lang.name,word"
+#print "lang.name,word,r,g,b"
 
 # pick sample of N random colours
 test_colours = [
@@ -74,12 +85,17 @@ test_colours = [
 # output for learner A
 for rgb_tuple in test_colours:
     probe_colour("langA", learnerA, rgb_tuple)
+    pass
+
+#probe_mean("langA", learnerA)
 
 # iteratively train learner B on A's utterances (N iterations)
 for i in range(0, args.training_iterations):
     (word, meaning) = learnerA.say_something()
     learnerB.learn(word, meaning)
+    #probe_mean("langB_%d" % i, learnerB)
 
     if i % args.skip == 0:
         for rgb_tuple in test_colours:
             probe_colour("langB_%d" % i, learnerB, rgb_tuple)
+            pass
