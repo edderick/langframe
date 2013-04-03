@@ -16,7 +16,9 @@ class GaussianColourSemantics:
     examples.
     """
 
-    def __init__(self, agent_name):
+    def __init__(self, agent_name, creative=True):
+        self.creative = True
+
         self.n = dict()             # word => num training examples
         self.mean = dict()         # word => (m_x, m_y, m_z)
         self.variance = dict()     # word -> (sig_x, sig_y, sig_z)
@@ -70,6 +72,12 @@ class GaussianColourSemantics:
         point = self._unpack_expression(expression)
         prob_density = dict()
 
+        # if there are no nearby prototypes, make up a word
+        distances = [sum(map(lambda x,mu: (x-mu)**2, point,self.mean[word])) 
+                        for word in self.n]
+        if self.creative and all(x > 35000 for x in distances):
+            self.invent_word(point)
+
         # calculate probability density at point for each word
         for word in self.n:
             mean = self.mean[word]
@@ -105,6 +113,15 @@ class GaussianColourSemantics:
             (r,g,b) = map(lambda x: 255 if x > 255 else x, (r,g,b))
 
             return Expression(["COLOUR", "r_%d" % r, "g_%d" % g, "b_%d" % b])
+
+    def invent_word(self, point):
+        """Creates a new word; boringly named new_i for the ith word in the vocab"""
+        #TODO: more interesting names
+
+        new_word = "new_%d" % len(self.n)
+        self.n[new_word] = 1
+        self.mean[new_word] = point
+        self.variance[new_word] = (1600, 1600, 1600) # arbitrary variance
 
     def say_something(self):
         """Return a random UTM pair"""
