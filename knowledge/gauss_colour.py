@@ -26,8 +26,6 @@ class GaussianColourSemantics:
 
         self._M2 = dict()   # sum squares diff from current mean
 
-        self.log = ColourLogger(agent_name)
-
     def _unpack_expression(self, expression):
         """Abstract away unpacking of numerical (R,G,B) tuple from expressions of the
         form <COLOUR r_X g_Y b_Z>"""
@@ -62,8 +60,6 @@ class GaussianColourSemantics:
             self.variance[word] = tuple(map(lambda x: x / float(n - 1), self._M2[word]))
         else:
             self.variance[word] = (5,5,5) # small variance for new point
-
-        self.log.new_point(word, point)
 
     def word_for(self, expression):
         """Query to get a word for a certain colour value (point). This may
