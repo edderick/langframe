@@ -42,6 +42,10 @@ class LinearColourSemantics:
         self.n[word] += 1
         n = self.n[word]
         
+        delta = map(lambda x,mean: x-mean, point, self.mean[word]) # X - Mean
+        norm_delta = map(lambda delt: float(delt)/float(n), delta)
+        self.mean[word] = tuple(map(lambda m,nd: m+nd, self.mean[word], norm_delta))
+
         self.log.new_point(word, point)
 
     def word_for(self, expression):
@@ -50,6 +54,7 @@ class LinearColourSemantics:
         for a single colour value, so a random word will be selected. 
         """
         point = self._unpack_expression(expression)
+        distance = dict()
         prob_density = dict()
 
         # calculate probability density at point for each word
@@ -57,7 +62,12 @@ class LinearColourSemantics:
             mean = self.mean[word]
 
             dist = map(lambda x,mu: ((x-mu)**2), point, mean )
-            prob_density[word] = sum(dist)
+            distance[word] = 1/sum(dist)
+
+        norm_const = sum(distance[x] for x in distance)
+
+        for word in distance:
+            prob_density[word] = distance[word]/norm_const
 
         # pick random number 0..sum(densities)
         # build cumulative sum of densities for words until sum > random number
@@ -89,8 +99,11 @@ class LinearColourSemantics:
 
     def say_something(self):
         """Return a random UTM pair"""
-        word = random.choice(self.n.keys())
             
-        col_expr = self.expression_for(word)
+        col_expr = Expression(["COLOUR",
+                               "r_%d" % random.randint(0,255),
+                               "g_%d" % random.randint(0,255),
+                               "b_%d" % random.randint(0,255)  ])
+        word = self.word_for(col_expr)
 
         return (word, col_expr)
