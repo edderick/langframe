@@ -17,7 +17,7 @@ import random
 import argparse
 
 from training.expression import Expression
-from knowledge import knn_colour
+from knowledge import gauss_colour
 
 def get_colour_expression(rgb):
     """ convert to proper expression format to be interpretec"""
@@ -39,7 +39,7 @@ parser.add_argument('files',
     nargs='?', help='specify input files o/w stdin')
 
 parser.add_argument('-M', '--generations', dest="generations",
-                    type=int, nargs="?", default=5)
+                    type=int, nargs="?", default=15)
 parser.add_argument('-N', '--train-samples', dest="num_train_samples",
                     type=int, nargs="?", default=100)
 parser.add_argument('-t', '--test-samples', dest="num_test_samples",
@@ -52,7 +52,7 @@ parser.add_argument('--k', dest="knearest",
 args = parser.parse_args()
 
 # set up L0 & train from stdin
-learnerB = knn_colour.KNNColourSemantics("L_0", k=args.knearest)
+learnerB = gauss_colour.GaussianColourSemantics("L_0")
 
 for line in fileinput.input(args.files):
     entry = line.split(",")
@@ -80,7 +80,7 @@ for rgb_tuple in test_colours:
 # generation simulation
 for generation in range(1,args.generations):
     learnerA = learnerB
-    learnerB = knn_colour.KNNColourSemantics("L_%d" % generation, k=args.knearest)
+    learnerB = gauss_colour.GaussianColourSemantics("L_%d" % generation, creative=True)
     
     # train L(i+1) (B) from L(i) (A)
     for i in range(0, args.num_train_samples):
