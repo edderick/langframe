@@ -17,7 +17,7 @@ class ColourLogger(Logger):
 
         # output header CSV
         self.probe_logger.info("lang.name,word")
-        self.mean_logger.info("lang.name,word, r, g, b")
+        self.mean_logger.info("lang.name,word,r,g,b")
 
     def display_log(*channels):
         Logger.display_log(*channels)
@@ -33,3 +33,25 @@ class ColourLogger(Logger):
                                  "g_%d" % rgb[1],
                                  "b_%d" % rgb[2] ])
             self.probe_logger.info("%s,%s" % (lang_name, self.learner.word_for(expression)))
+    
+    def mean(self, lang_name):
+        core_words = ("black", "darkblue", "green", "red", "cyan", "yellow", 
+                    "magenta", "white")
+        for word in core_words:
+            try:
+                mean = self.learner.mean[word]
+                self.mean_logger.info("%s,%s,%d,%d,%d" % 
+                    (lang_name, word, mean[0], mean[1], mean[2]))
+            except KeyError:
+                self.mean_logger.info("%s,%s,0,0,0" % (lang_name, word))
+
+        used_words = set(core_words)
+        all_words = set(self.learner.n.keys())
+        extra_words = list(all_words.intersection(used_words))
+        extra_words.sort()
+
+        for extra_word in extra_words:
+            mean = self.learner.mean[extra_word]
+            self.mean_logger.info("%s,%s,%d,%d,%d" % 
+                    (lang_name, extra_word, mean[0], mean[1], mean[2]))
+

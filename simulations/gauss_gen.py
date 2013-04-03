@@ -43,7 +43,8 @@ args = parser.parse_args()
 # set up L0 & train from stdin
 learnerB = gauss_colour.GaussianColourSemantics("L_0")
 
-utils.logger.display_log("langframe.root.colour.sample")
+#utils.logger.display_log("langframe.root.colour.sample")
+utils.logger.display_log("langframe.root.colour.mean")
 logger = logger.colour_logger.ColourLogger(learnerB)
 
 for line in fileinput.input(args.files):
@@ -66,6 +67,7 @@ test_colours = [
      random.randint(0,255)) for i in range(args.num_test_samples)]
 
 logger.log_points("langA", test_colours)
+logger.mean("langA")
 
 # generation simulation
 for generation in range(1,args.generations):
@@ -82,3 +84,4 @@ for generation in range(1,args.generations):
     # output sample from trained L(i+1)
     if i % args.skip == 0:
         logger.log_points("langL_%d" % generation, test_colours)
+        logger.mean("langL_%d" % generation)
