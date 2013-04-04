@@ -19,15 +19,13 @@ class ColourLogger(Logger):
         self.probe_logger.info("lang.name,word")
         self.mean_logger.info("lang.name,word,r,g,b")
 
-    def display_log(*channels):
-        Logger.display_log(*channels)
-
     def new_point(self, word, p):
         coordinates = ",".join(str(x) for x in p)
         self.data_logger.info("%s,%s,%s,%s" %
                               (self.learner.agent_name, coordinates, word, coordinates))
 
     def log_points(self, lang_name, test_colours):
+        """output words for a set of sample points in self.learner"""
         for rgb in test_colours:
             expression = Expression(["COLOUR", "r_%d" % rgb[0],
                                  "g_%d" % rgb[1],
@@ -35,6 +33,9 @@ class ColourLogger(Logger):
             self.probe_logger.info("%s,%s" % (lang_name, self.learner.word_for(expression)))
     
     def mean(self, lang_name):
+        """output mean values for each word the language"""
+
+        # output core words in order first, so colour ordering works 
         core_words = ("black", "darkblue", "green", "red", "cyan", "yellow", 
                     "magenta", "white")
         for word in core_words:
@@ -45,9 +46,13 @@ class ColourLogger(Logger):
             except KeyError:
                 self.mean_logger.info("%s,%s,0,0,0" % (lang_name, word))
 
+        # work out which words have been left out (set difference)
         used_words = set(core_words)
         all_words = set(self.learner.n.keys())
+
         extra_words = list(all_words.difference(used_words))
+
+        # sort these, so "like-for-like" is compared each time
         extra_words.sort()
 
         for extra_word in extra_words:

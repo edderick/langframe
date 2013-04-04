@@ -7,9 +7,12 @@ def _unpack_expression(expression):
                       for subexpr in expression.subexpressions[1:] )
 
 def three_bit(expression):
-       rgb = _unpack_expression(expression)
+    """Reduce precision of expression from 8-bit (0..255) to 3-bit (0..7) but
+    within same range"""
 
-       new = map(lambda x : int(round(float(x) / 32)*32), rgb)
-       new_form = map(lambda col,x: "%s_%s" % (col, x), ("r","g","b"), new)
+    rgb = _unpack_expression(expression)
 
-       return Expression(["COLOUR"] + new_form)
+    new = map(lambda x : int(round(float(x) / 32)*32), rgb)
+    new_form = map(lambda col,x: "%s_%s" % (col, x), ("r","g","b"), new)
+
+    return Expression(["COLOUR"] + new_form)
