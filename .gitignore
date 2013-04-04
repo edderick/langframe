@@ -1,0 +1,12 @@
+# vim undo files
+*.un~
+
+# compiled python files
+*.pyc
+
+# OS X crud
+.DS_Store
+
+# graphs & intermediate text files
+*.pdf
+*.txt
