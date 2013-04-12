@@ -18,7 +18,7 @@ class GaussianColourSemantics:
 
     def __init__(self, agent_name, creative=True):
         self.agent_name = agent_name
-        self.creative = True
+        self.creative = creative
 
         self.n = dict()             # word => num training examples
         self.mean = dict()         # word => (m_x, m_y, m_z)
