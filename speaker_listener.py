@@ -30,7 +30,6 @@ class SpeakerListener:
 
         self.incompetence[constant_term].append(incompetence_filter)
 
-
     def say_something(self):
         """return a UTM pair, equally likely to be from each semantic unit"""
         chosen = random.choice(self.knowledge.keys())
